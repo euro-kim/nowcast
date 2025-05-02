@@ -55,26 +55,26 @@ This guide will help you get up and running with the project.
     ```
 5. **Detail the Available Arguments:**
 
-A clear table or list is the best way to present the command-line arguments.
-        
-        ```markdown
-        ### Available Arguments
-        
-        The `main.py` script accepts the following optional arguments:
-        
-        | Argument      | Type    | Default               | Description                                                                     |
-        |---------------|---------|-----------------------|---------------------------------------------------------------------------------|
-        | `--seed`      | `int`   | `1`                   | Random seed for reproducibility.                                                |
-        | `--horizon`   | `int`   | `12`                  | The number of time steps to forecast.                                           |
-        | `--lag`       | `int`   | `12`                  | The number of lagged observations to use for VAR.                               |
-        | `--maxlags`   | `int`   | `15`                  | The maximum number of lags to consider for VAR order selection.                 |
-        | `--neurons`   | `int`   | `200`                 | The number of neurons in the deep learning model's layers.                      |
-        | `--batch_size`| `int`   | `16`                  | The batch size for training deep learning models.                               |
-        | `--epochs`    | `int`   | `100`                 | The number of training epochs for deep learning.                                |
-        | `--data_file` | `str`   | `'assets/data.json'`  | Path to the JSON data file containing your economic and web traffic data.       |
-        | `--var0`      | `str`   | `'cpi'`               | The name of the first economic variable.                                        |
-        | `--var1`      | `str`   | `'ppi'`               | The name of the second economic variable.                                       |
-        | `--ic`        | `str`   | `'aic'`               | The information criterion for VAR order selection (`aic`, `bic`, `hqic`).       |
-        | `--optimizer` | `str`   | `'adam'`              | The optimization algorithm for deep learning (`adam`, `sgd`).                   |
-        | `--loss`      | `str`   | `'mean_squared_error'`| The loss function for deep learning (`mean_squared_error`, `mae`).              |
-        ```
+    A clear table or list is the best way to present the command-line arguments.
+            
+    ```markdown
+    ### Available Arguments
+    
+    The `main.py` script accepts the following optional arguments:
+    
+    | Argument      | Type    | Default               | Description                                                                     |
+    |---------------|---------|-----------------------|---------------------------------------------------------------------------------|
+    | `--seed`      | `int`   | `1`                   | Random seed for reproducibility.                                                |
+    | `--horizon`   | `int`   | `12`                  | The number of time steps to forecast.                                           |
+    | `--lag`       | `int`   | `12`                  | The number of lagged observations to use for VAR.                               |
+    | `--maxlags`   | `int`   | `15`                  | The maximum number of lags to consider for VAR order selection.                 |
+    | `--neurons`   | `int`   | `200`                 | The number of neurons in the deep learning model's layers.                      |
+    | `--batch_size`| `int`   | `16`                  | The batch size for training deep learning models.                               |
+    | `--epochs`    | `int`   | `100`                 | The number of training epochs for deep learning.                                |
+    | `--data_file` | `str`   | `'assets/data.json'`  | Path to the JSON data file containing your economic and web traffic data.       |
+    | `--var0`      | `str`   | `'cpi'`               | The name of the first economic variable.                                        |
+    | `--var1`      | `str`   | `'ppi'`               | The name of the second economic variable.                                       |
+    | `--ic`        | `str`   | `'aic'`               | The information criterion for VAR order selection (`aic`, `bic`, `hqic`).       |
+    | `--optimizer` | `str`   | `'adam'`              | The optimization algorithm for deep learning (`adam`, `sgd`).                   |
+    | `--loss`      | `str`   | `'mean_squared_error'`| The loss function for deep learning (`mean_squared_error`, `mae`).              |
+    ```

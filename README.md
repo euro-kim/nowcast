@@ -3,17 +3,17 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](https://github.com/euro-kim/nowcast/pulls)
 
-## Project Overview
+## Overview
 This is a source code containg simple code to predict economic variables with web traffic data.
 
-### Included Models
-Casual Inference: VAR
-Forecasting Models: Linear Model, VAR, LSTM, GRU
+**Included Models**
+Casual Inference: VAR <br />
+Forecasting Models: Linear Model, VAR, LSTM, GRU <br />
 
-### Use
-By default, the data contains monthly CPI, PPI, employment data from South Korea, ranging from 2010.01 to 2025.03.
-By default, the data contains google trends data for keyword 물가 and inflation in South Korea, ranging from 2010.01 to 2025.03.
-To add , add the data in json format in folder at assets/data.json
+**Use**
+By default, the data contains monthly CPI, PPI, employment data from South Korea, ranging from 2010.01 to 2025.03. <br />
+By default, the data contains google trends data for keyword '물가' and inflation in South Korea, ranging from 2010.01 to 2025.03. <br />
+To add , add the data in json format in folder at assets/data.json <br />
 
 ## Getting Started 
 

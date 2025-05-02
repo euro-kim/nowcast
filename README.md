@@ -34,7 +34,6 @@ This guide will help you get up and running with the project.
     cd nowcast
     ```
 
-
 2.  **Install the required Python packages:**
 
     ```bash
@@ -60,7 +59,7 @@ This guide will help you get up and running with the project.
     ```markdown
     ### Available Arguments
     
-    The `main.py` script accepts the following optional arguments:
+    The `run.py` script accepts the following optional arguments:
     
     | Argument      | Type    | Default               | Description                                                                     |
     |---------------|---------|-----------------------|---------------------------------------------------------------------------------|

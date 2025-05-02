@@ -6,16 +6,16 @@
 ## Overview
 This is a source code containg simple code to predict economic variables with web traffic data.
 
-**Included Models**
+1. **Included Models**
+    
+    Casual Models: VAR <br />
+    Forecasting Models: Linear Model, VAR, LSTM, GRU <br />
 
-Casual Inference: VAR <br />
-Forecasting Models: Linear Model, VAR, LSTM, GRU <br />
+2. **Use**
 
-**Use**
-
-By default, the data contains monthly CPI, PPI, employment data from South Korea, ranging from 2010.01 to 2025.03. <br />
-By default, the data contains google trends data for keyword '물가' and inflation in South Korea, ranging from 2010.01 to 2025.03. <br />
-To add , add the data in json format in folder at assets/data.json <br />
+    By default, the data contains monthly CPI, PPI, employment data from South Korea, ranging from 2010.01 to 2025.03. <br />
+    By default, the data contains google trends data for keyword '물가' and inflation in South Korea, ranging from 2010.01 to 2025.03. <br />
+    To add , add the data in json format in folder at assets/data.json <br />
 
 ## Getting Started 
 

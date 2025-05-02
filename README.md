@@ -11,7 +11,7 @@ This is a source code containg simple code to predict economic variables with we
     Casual Models: VAR <br />
     Forecasting Models: Linear Model, VAR, LSTM, GRU <br />
 
-2. **Use**
+2. **Usage**
 
     By default, the data contains monthly CPI, PPI, employment data from South Korea, ranging from 2010.01 to 2025.03. <br />
     By default, the data contains google trends data for keyword '물가' and inflation in South Korea, ranging from 2010.01 to 2025.03. <br />

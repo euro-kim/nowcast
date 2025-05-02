@@ -6,11 +6,11 @@
 ## Project Overview
 This is a source code containg simple code to predict economic variables with web traffic data.
 
-## Included Models
+### Included Models
 Casual Inference: VAR
 Forecasting Models: Linear Model, VAR, LSTM, GRU
 
-## Use
+### Use
 By default, the data contains monthly CPI, PPI, employment data from South Korea, ranging from 2010.01 to 2025.03.
 By default, the data contains google trends data for keyword 물가 and inflation in South Korea, ranging from 2010.01 to 2025.03.
 To add , add the data in json format in folder at assets/data.json
@@ -42,38 +42,38 @@ Make sure you have the following installed on your system:
     ```
 
     This command will install all the necessary libraries listed in the `requirements.txt` file.
-
 3. **Running the Main Script:**
 
-The primary entry point for this project is the `main.py` script. You can use it to perform different activities with various models.
-
-The basic syntax is:
-
-```bash
-python main.py <activity> <model_name> [arguments]
-```
+    The primary entry point for this project is the `run.py` script. You can use it to perform different activities with various models.
+    
+    The basic syntax is:
+    
+    ```bash
+    python run.py <activity> <model_name> [arguments]
+    
+    ```
 4. **Detail the Available Arguments:**
 
 A clear table or list is the best way to present the command-line arguments.
-
-```markdown
-### Available Arguments
-
-The `main.py` script accepts the following optional arguments:
-
-| Argument      | Type    | Default               | Description                                                                     |
-|---------------|---------|-----------------------|---------------------------------------------------------------------------------|
-| `--seed`      | `int`   | `1`                   | Random seed for reproducibility.                                                |
-| `--horizon`   | `int`   | `12`                  | The number of time steps to forecast.                                           |
-| `--lag`       | `int`   | `12`                  | The number of lagged observations to use for VAR.                               |
-| `--maxlags`   | `int`   | `15`                  | The maximum number of lags to consider for VAR order selection.                  |
-| `--neurons`   | `int`   | `200`                 | The number of neurons in the deep learning model's layers.                      |
-| `--batch_size`| `int`   | `16`                  | The batch size for training deep learning models.                               |
-| `--epochs`    | `int`   | `100`                 | The number of training epochs for deep learning.                                |
-| `--data_file` | `str`   | `'assets/data.json'`  | Path to the JSON data file containing your economic and web traffic data.       |
-| `--var0`      | `str`   | `'cpi'`               | The name of the first economic variable.                                      |
-| `--var1`      | `str`   | `'ppi'`               | The name of the second economic variable.                                     |
-| `--ic`        | `str`   | `'aic'`               | The information criterion for VAR order selection (`aic`, `bic`, `hqic`).         |
-| `--optimizer` | `str`   | `'adam'`              | The optimization algorithm for deep learning (`adam`, `sgd`).                    |
-| `--loss`      | `str`   | `'mean_squared_error'`| The loss function for deep learning (`mean_squared_error`, `mae`).               |
-```
+    
+    ```markdown
+    ### Available Arguments
+    
+    The `main.py` script accepts the following optional arguments:
+    
+    | Argument      | Type    | Default               | Description                                                                     |
+    |---------------|---------|-----------------------|---------------------------------------------------------------------------------|
+    | `--seed`      | `int`   | `1`                   | Random seed for reproducibility.                                                |
+    | `--horizon`   | `int`   | `12`                  | The number of time steps to forecast.                                           |
+    | `--lag`       | `int`   | `12`                  | The number of lagged observations to use for VAR.                               |
+    | `--maxlags`   | `int`   | `15`                  | The maximum number of lags to consider for VAR order selection.                  |
+    | `--neurons`   | `int`   | `200`                 | The number of neurons in the deep learning model's layers.                      |
+    | `--batch_size`| `int`   | `16`                  | The batch size for training deep learning models.                               |
+    | `--epochs`    | `int`   | `100`                 | The number of training epochs for deep learning.                                |
+    | `--data_file` | `str`   | `'assets/data.json'`  | Path to the JSON data file containing your economic and web traffic data.       |
+    | `--var0`      | `str`   | `'cpi'`               | The name of the first economic variable.                                      |
+    | `--var1`      | `str`   | `'ppi'`               | The name of the second economic variable.                                     |
+    | `--ic`        | `str`   | `'aic'`               | The information criterion for VAR order selection (`aic`, `bic`, `hqic`).         |
+    | `--optimizer` | `str`   | `'adam'`              | The optimization algorithm for deep learning (`adam`, `sgd`).                    |
+    | `--loss`      | `str`   | `'mean_squared_error'`| The loss function for deep learning (`mean_squared_error`, `mae`).               |
+    ```

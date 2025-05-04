@@ -4,6 +4,10 @@ from .common import init_df, evaluate_forecast, set_seeds, plot_forecast
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LinearRegression
 from statsmodels.tsa.api import VAR
+from statsmodels.tsa.arima.model import ARIMA
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # 0 = all logs, 1 = filter INFO, 2 = filter WARNING, 3 = filter ERROR
+
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, GRU, Dense  # Changed GRU to LSTM
 import warnings
@@ -57,9 +61,53 @@ def linear(seed, horizon, data_file, var0, var1):
     y_past_diff_log = df[f'diff_log_{var0}'].iloc[:-(horizon)].values
     # Get index
     forecast_index = df.index[-horizon:]
+    
 
     return y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log
 
+def varbase(seed, maxlags, horizon, data_file, var0, ic):
+    np.random.seed(seed)
+    
+    # Load and preprocess data
+    df = init_df(data_file)
+    df[f'log_{var0}'] = np.log(df[var0] + 1e-6)
+    df[f'diff_log_{var0}'] = df[f'log_{var0}'].diff()
+
+    series = df[f'diff_log_{var0}'].dropna()
+    train_data = series[:-horizon]
+    test_data = series[-horizon:]
+
+    if len(train_data) < maxlags:
+        print(f"Error: Not enough training data. len(train_data)={len(train_data)}, maxlags={maxlags}")
+        sys.exit(1)
+
+    try:
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=UserWarning)
+            model = ARIMA(train_data, order=(maxlags, 0, 0))
+            fitted_model = model.fit()
+    except Exception as e:
+        print(f"Error fitting AR model: {e}")
+        sys.exit(1)
+
+    # Forecast in differenced log space
+    forecast_diff_log = fitted_model.forecast(steps=horizon)
+
+    # Convert forecast back to original scale
+    last_log_value = df[f'log_{var0}'].iloc[-horizon - 1]
+    forecast_log = forecast_diff_log.cumsum() + last_log_value
+    forecast_values = np.exp(forecast_log) - 1e-6
+
+    # Actual values
+    y_true = df[var0].iloc[-horizon:]
+    y_past = df[var0].iloc[:-(horizon)]
+    y_true_diff_log = df[f'diff_log_{var0}'].iloc[-horizon:].values
+    y_past_diff_log = df[f'diff_log_{var0}'].iloc[:-(horizon)].dropna().values
+    y_pred_diff_log = forecast_diff_log.values
+    forecast_index = df.index[-horizon:]
+    y_pred = forecast_values.values
+
+    return y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log
 
 def var(seed, maxlags, horizon, data_file, var0, var1, ic):
     df = init_df(data_file)
@@ -103,6 +151,7 @@ def var(seed, maxlags, horizon, data_file, var0, var1, ic):
 
     forecast_index = df.index[-horizon:]
     y_pred = forecast_df[f'{var0}_forecast'].values
+    
 
     return y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log
 
@@ -168,7 +217,7 @@ def var(seed, maxlags, horizon, data_file, var0, var1, ic):
 
 #     return y_past, y_true, y_pred, forecast_index
 
-def lstm(seed, horizon, lag, neurons, epochs, batch_size, data_file, var0, var1, optimizer, loss):
+def lstm(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss):
     set_seeds(seed)
     df = init_df(data_file)
     df[f'log_{var0}'] = np.log(df[var0] + 1e-6)
@@ -192,11 +241,17 @@ def lstm(seed, horizon, lag, neurons, epochs, batch_size, data_file, var0, var1,
     X_train, X_test = X_all[:split_index], X_all[split_index:]
     y_train, y_test = y_all[:split_index], y_all[split_index:]
 
-    model = Sequential([
-        LSTM(neurons, input_shape=(lag, len(input_cols_idx))),
-        Dense(1)
-    ])
+    model = Sequential()
+    for i in range(layers):
+        return_sequences = i < layers - 1  # Only the last LSTM layer should return a single output
+        if i == 0:
+            model.add(LSTM(neurons, return_sequences=return_sequences, input_shape=(lag, len(input_cols_idx))))
+        else:
+            model.add(LSTM(neurons, return_sequences=return_sequences))
+
+    model.add(Dense(1))
     model.compile(optimizer=optimizer, loss=loss)
+
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=UserWarning)
         model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, verbose=1)
@@ -213,6 +268,7 @@ def lstm(seed, horizon, lag, neurons, epochs, batch_size, data_file, var0, var1,
     y_past = df[var0].iloc[:-(horizon)]
     y_past_diff_log = df[f'diff_log_{var0}'].iloc[:-(horizon)].dropna().values
     forecast_index = df.index[-horizon:]
+    
 
     return y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log
 
@@ -277,8 +333,7 @@ def lstm(seed, horizon, lag, neurons, epochs, batch_size, data_file, var0, var1,
 #     forecast_index = df.index[-horizon:]
 
 #     return y_past, y_true, y_pred, forecast_index
-
-def gru(seed, horizon, lag, neurons, epochs, batch_size, data_file, var0, var1, optimizer, loss):
+def gru(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss):
     set_seeds(seed)
     df = init_df(data_file)
     df[f'log_{var0}'] = np.log(df[var0] + 1e-6)
@@ -302,11 +357,17 @@ def gru(seed, horizon, lag, neurons, epochs, batch_size, data_file, var0, var1, 
     X_train, X_test = X_all[:split_index], X_all[split_index:]
     y_train, y_test = y_all[:split_index], y_all[split_index:]
 
-    model = Sequential([
-        GRU(neurons, input_shape=(lag, len(input_cols_idx))),
-        Dense(1)
-    ])
+    model = Sequential()
+    for i in range(layers):
+        return_sequences = i < layers - 1
+        if i == 0:
+            model.add(GRU(neurons, return_sequences=return_sequences, input_shape=(lag, len(input_cols_idx))))
+        else:
+            model.add(GRU(neurons, return_sequences=return_sequences))
+
+    model.add(Dense(1))
     model.compile(optimizer=optimizer, loss=loss)
+
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=UserWarning)
         model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, verbose=1)
@@ -323,5 +384,6 @@ def gru(seed, horizon, lag, neurons, epochs, batch_size, data_file, var0, var1, 
     y_past = df[var0].iloc[:-(horizon)]
     y_past_diff_log = df[f'diff_log_{var0}'].iloc[:-(horizon)].dropna().values
     forecast_index = df.index[-horizon:]
+    
 
     return y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log

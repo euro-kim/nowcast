@@ -76,7 +76,7 @@ def plot_forecast(diff:bool, actual, predicted, var0, var1, forecast_index, titl
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig(f"results/forecast/{title_suffix}, {var0}, {var1}.png")  
+    plt.savefig(f"results/forecast/png/{title_suffix}, {var0}, {var1}.png")  
     plt.show()
 
 def plot_forecast_past(diff:bool, history, actual, predicted, var0, var1, forecast_index, title_suffix=""):
@@ -99,7 +99,7 @@ def plot_forecast_past(diff:bool, history, actual, predicted, var0, var1, foreca
     try:
         history = history.iloc[-n:]
     except:
-        history = history[-n:]
+        history = pd.Series(history[-n:])  
 
     plt.figure(figsize=(12, 6))
     plt.plot(history.index, history, label=f'Historical {var0}', alpha=0.7)
@@ -112,7 +112,7 @@ def plot_forecast_past(diff:bool, history, actual, predicted, var0, var1, foreca
     plt.grid(True)
     plt.tight_layout()
 
-    plt.savefig(f"results/forecast/{title_suffix}, {var0}, {var1} history.png")  
+    plt.savefig(f"results/forecast/png/{title_suffix}, {var0}, {var1} history.png")  
     plt.show()
 
 

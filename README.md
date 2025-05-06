@@ -47,18 +47,53 @@ This guide will help you get up and running with the project.
 4. **Running the Main Script:**
 
     The primary entry point for this project is the `run.py` script. You can use it to perform different activities with various models.
-    
+
     The basic syntax is:
     
     ```bash
     python run.py <activity> <model_name> [arguments]
     
     ```
+    activity includes 'forecast' and 'casual', and model_name includes  
+
+
+    ```bash
+    python run.py forecast gru --var0 'ppi' --var1 'inflation' --seed 1
+    python run.py casual var --var0 'cpi' --var1 'inflation' 
+    
+    ```
+
+
 5. **Detail the Available Arguments:**
 
     A clear table or list is the best way to present the command-line arguments.
             
     ```markdown
+
+    ### Available Acitity
+    
+    The `run.py` script requires one of the activities:
+    
+    | Activity      | Description                                                                     |
+    |---------------|---------------------------------------------------------------------------------|
+    | forecast      | Forecasting (prediction)                                                        |
+    | casual        | Casual Inference. Only supports VAR                                             |
+                                                                    |
+
+    ### Available Models
+    
+    The `run.py` script requires one of the following model_names:
+    
+    | model_name    | Description                                                                     |
+    |---------------|---------------------------------------------------------------------------------|
+    | arima         | ARIMA model                                                                     |
+    | linear        | Simple Linear Regression                                                        |
+    | var           | VAR model                                                                       |
+    | LSTM          | LSTM model                                                                      |
+    | GRU           | GRU model                                                                       |
+
+
+    
     ### Available Arguments
     
     The `run.py` script accepts the following optional arguments:
@@ -70,6 +105,7 @@ This guide will help you get up and running with the project.
     | `--lag`       | `int`   | `12`                  | The number of lagged observations to use for VAR.                               |
     | `--maxlags`   | `int`   | `15`                  | The maximum number of lags to consider for VAR order selection.                 |
     | `--neurons`   | `int`   | `200`                 | The number of neurons in the deep learning model's layers.                      |
+    | `--layerss`   | `int`   | `1`                   | The number of layers for RNN models.                                            |
     | `--batch_size`| `int`   | `16`                  | The batch size for training deep learning models.                               |
     | `--epochs`    | `int`   | `100`                 | The number of training epochs for deep learning.                                |
     | `--data_file` | `str`   | `'assets/data.json'`  | Path to the JSON data file containing your economic and web traffic data.       |

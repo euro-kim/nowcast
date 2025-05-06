@@ -5,6 +5,8 @@ Normalized DTW Distance: 0.960830206715495
 
 
 --- ADF Statistics ---
+cpi ADF Statistic: 0.9498, p-value: 0.9937
+ppi ADF Statistic: -0.5126, p-value: 0.8895
 diff_log_cpi ADF Statistic: -2.7430, p-value: 0.0669
 diff_log_ppi ADF Statistic: -3.1359, p-value: 0.0240
 
@@ -15,8 +17,8 @@ diff_log_ppi ADF Statistic: -3.1359, p-value: 0.0240
 ==================================
 Model:                         VAR
 Method:                        OLS
-Date:           Thu, 01, May, 2025
-Time:                     22:57:54
+Date:           Tue, 06, May, 2025
+Time:                     21:34:06
 --------------------------------------------------------------------
 No. of Equations:         2.00000    BIC:                   -22.3492
 Nobs:                     171.000    HQIC:                  -22.8514

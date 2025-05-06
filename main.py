@@ -1,16 +1,10 @@
 # main.py
 import sys, csv
 import argparse
-from scripts.forecast import linear, var, lstm, gru, varbase
+from scripts.casual import casual_var
+from scripts.forecast import arima, linear, var, lstm, gru
 from scripts.common import evaluate_forecast, plot_forecast, plot_forecast_past
 
-
-SCRIPT_MAPPING = {
-    "var": "scripts/forecast/var.py",
-    "linear": "scripts/forecast/linear.py",
-    "gru": "scripts/forecast/gru.py",
-    "lstm": "scripts/forecast/lstm.py",
-}
 
 def main():
     parser = argparse.ArgumentParser(description=f"Run an model for time series forecasting.") 
@@ -54,20 +48,23 @@ def main():
     ic = args.ic
     optimizer = args.optimizer
     loss = args.loss
-    if acivity == 'base':
-        y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = varbase(seed, maxlags, horizon, data_file, var0, ic)
-        # Evaluation
-        rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
-        rmse, mae, r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
-
-    if acivity == 'forecast':
-        if model_name == 'linear':
+    if acivity == 'casual':
+        if model_name in ['var','VAR']:
+            casual_var(maxlags, data_file, var0, var1, ic)
+        else:
+            print("Error: The second argument should be 'var'")
+            print("Example: python run.py casual var --var0 'ppi' --var1 'inflation'")
+            sys.exit(1)
+    elif acivity == 'forecast':
+        if model_name == 'arima':
+            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = arima(seed, maxlags, horizon, data_file, var0, ic)
+        elif model_name == 'linear':
             y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = linear(seed, horizon, data_file, var0, var1)
-        if model_name == 'var':
+        elif model_name == 'var':
             y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = var(seed, maxlags, horizon, data_file, var0, var1, ic)
-        if model_name == 'lstm':
+        elif model_name == 'lstm':
             y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = lstm(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss)
-        if model_name == 'gru':
+        elif model_name == 'gru':
             y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = gru(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss)
         # Evaluation
         rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
@@ -78,40 +75,55 @@ def main():
         plot_forecast(False, y_true, y_pred, var0, var1, forecast_index, title_suffix=f'{model_name}') 
         plot_forecast(True, y_true_diff_log, y_pred_diff_log, var0, var1, forecast_index, title_suffix=f'{model_name}') 
         plot_forecast_past(False, y_past ,y_true, y_pred, var0, var1, forecast_index, title_suffix=f'{model_name}')
-    if acivity == 'generator':
+    elif acivity == 'generator':
+            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = arima(seed, maxlags, horizon, data_file, var0, ic)
+            rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
+            diff_log_rmse, diff_log_mae, diff_log_r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
+            dic={
+                    'rmse': rmse,
+                    'mae': mae,
+                    'r2': r2,
+                    'diff_log_rmse': diff_log_rmse,
+                    'diff_log_mae': diff_log_mae,
+                    'diff_log_r2': diff_log_r2,
+            }
+            dicts.append(dic)
+            header = dicts[0].keys()
+            with open(f'results/forecast/csv/arima, {var0}, {var1}.csv', 'w', newline='') as csvfile:
+                writer = csv.DictWriter(csvfile, fieldnames=header)
+                writer.writeheader()
+                writer.writerows(dicts)
             dicts=[]
-            for seed in range(1,11): 
-                y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log= linear(seed, horizon, data_file, var0, var1)
-                rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
-                diff_log_rmse, diff_log_mae, diff_log_r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
-                dic={
-                     'rmse': rmse,
-                     'mae': mae,
-                     'r2': r2,
-                     'diff_log_rmse': diff_log_rmse,
-                     'diff_log_mae': diff_log_mae,
-                     'diff_log_r2': diff_log_r2,
-                }
-                dicts.append(dic)
+            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log= linear(seed, horizon, data_file, var0, var1)
+            rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
+            diff_log_rmse, diff_log_mae, diff_log_r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
+            dic={
+                    'rmse': rmse,
+                    'mae': mae,
+                    'r2': r2,
+                    'diff_log_rmse': diff_log_rmse,
+                    'diff_log_mae': diff_log_mae,
+                    'diff_log_r2': diff_log_r2,
+            }
+            dicts.append(dic)
             header = dicts[0].keys()
             with open(f'results/forecast/csv/linear, {var0}, {var1}.csv', 'w', newline='') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=header)
                 writer.writeheader()
                 writer.writerows(dicts)
             dicts=[]
-            for seed in range(1,11): 
-                y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log= var(seed, maxlags, horizon, data_file, var0, var1, ic)
-                rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
-                diff_log_rmse, diff_log_mae, diff_log_r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
-                dic={
-                     'rmse': rmse,
-                     'mae': mae,
-                     'r2': r2,
-                     'diff_log_rmse': diff_log_rmse,
-                     'diff_log_mae': diff_log_mae,
-                     'diff_log_r2': diff_log_r2,
-                }
-                dicts.append(dic)
+            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log= var(seed, maxlags, horizon, data_file, var0, var1, ic)
+            rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
+            diff_log_rmse, diff_log_mae, diff_log_r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
+            dic={
+                'rmse': rmse,
+                'mae': mae,
+                'r2': r2,
+                'diff_log_rmse': diff_log_rmse,
+                'diff_log_mae': diff_log_mae,
+                'diff_log_r2': diff_log_r2,
+            }
+            dicts.append(dic)
             header = dicts[0].keys()
             with open(f'results/forecast/csv/var, {var0}, {var1}.csv', 'w', newline='') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=header)
@@ -155,6 +167,10 @@ def main():
                 writer = csv.DictWriter(csvfile, fieldnames=header)
                 writer.writeheader()
                 writer.writerows(dicts)
+    else: 
+        print("Error: The first argument should be 'casual' or 'forecast'")
+        print("Example: python run.py forecast gru --var0 'ppi' --var1 'inflation'")
+        sys.exit(1)
 
 
 

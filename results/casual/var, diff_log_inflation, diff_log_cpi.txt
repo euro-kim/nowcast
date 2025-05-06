@@ -1,0 +1,201 @@
+--- Pearson Correlation ---
+Normalized Pearson Correlation: 0.5772079157227735
+Normalized DTW Distance: 2.386355907176555
+
+
+
+--- ADF Statistics ---
+diff_log_inflation ADF Statistic: -13.5100, p-value: 0.0000
+diff_log_cpi ADF Statistic: -2.7430, p-value: 0.0669
+
+
+
+--- Regression Summary ---
+  Summary of Regression Results   
+==================================
+Model:                         VAR
+Method:                        OLS
+Date:           Mon, 05, May, 2025
+Time:                     16:16:00
+--------------------------------------------------------------------
+No. of Equations:         2.00000    BIC:                   -15.1528
+Nobs:                     175.000    HQIC:                  -15.4752
+Log likelihood:           906.711    FPE:                1.52749e-07
+AIC:                     -15.6953    Det(Omega_mle):     1.29583e-07
+--------------------------------------------------------------------
+Results for equation diff_log_inflation
+========================================================================================
+                           coefficient       std. error           t-stat            prob
+----------------------------------------------------------------------------------------
+const                        -0.009451         0.016921           -0.559           0.576
+L1.diff_log_inflation        -0.283509         0.079397           -3.571           0.000
+L1.diff_log_cpi               5.524150         3.636028            1.519           0.129
+L2.diff_log_inflation        -0.308227         0.080064           -3.850           0.000
+L2.diff_log_cpi               0.834152         3.748413            0.223           0.824
+L3.diff_log_inflation        -0.107783         0.083607           -1.289           0.197
+L3.diff_log_cpi               7.386130         3.844286            1.921           0.055
+L4.diff_log_inflation        -0.078924         0.085935           -0.918           0.358
+L4.diff_log_cpi              -3.474259         3.785765           -0.918           0.359
+L5.diff_log_inflation        -0.025892         0.085995           -0.301           0.763
+L5.diff_log_cpi               3.997034         3.823457            1.045           0.296
+L6.diff_log_inflation        -0.156203         0.083723           -1.866           0.062
+L6.diff_log_cpi              -4.079598         3.672237           -1.111           0.267
+L7.diff_log_inflation        -0.010968         0.080091           -0.137           0.891
+L7.diff_log_cpi              -1.887811         3.518624           -0.537           0.592
+========================================================================================
+
+Results for equation diff_log_cpi
+========================================================================================
+                           coefficient       std. error           t-stat            prob
+----------------------------------------------------------------------------------------
+const                         0.000892         0.000353            2.527           0.011
+L1.diff_log_inflation         0.003444         0.001657            2.079           0.038
+L1.diff_log_cpi               0.265150         0.075874            3.495           0.000
+L2.diff_log_inflation         0.001453         0.001671            0.869           0.385
+L2.diff_log_cpi              -0.215374         0.078219           -2.753           0.006
+L3.diff_log_inflation         0.005648         0.001745            3.237           0.001
+L3.diff_log_cpi              -0.238667         0.080220           -2.975           0.003
+L4.diff_log_inflation         0.001874         0.001793            1.045           0.296
+L4.diff_log_cpi               0.249650         0.078999            3.160           0.002
+L5.diff_log_inflation        -0.003225         0.001794           -1.797           0.072
+L5.diff_log_cpi               0.027156         0.079785            0.340           0.734
+L6.diff_log_inflation        -0.000552         0.001747           -0.316           0.752
+L6.diff_log_cpi               0.095270         0.076630            1.243           0.214
+L7.diff_log_inflation         0.001952         0.001671            1.168           0.243
+L7.diff_log_cpi               0.271174         0.073424            3.693           0.000
+========================================================================================
+
+Correlation matrix of residuals
+                      diff_log_inflation  diff_log_cpi
+diff_log_inflation              1.000000      0.112265
+diff_log_cpi                    0.112265      1.000000
+
+
+
+--- Lag Order Selection ---
+Lag	AIC			BIC			HQIC
+1   	-15.374160      	-15.336819      	-15.359004
+2   	-15.442766      	-15.330742 *    	-15.397298
+3   	-15.558070      	-15.371364      	-15.482290 *
+4   	-15.614810      	-15.353421      	-15.508718
+5   	-15.619232      	-15.283161      	-15.482829
+6   	-15.587753      	-15.176999      	-15.421037
+7   	-15.623773 *    	-15.138336      	-15.426745
+8   	-15.680214      	-15.120095      	-15.452874
+9   	-15.655187      	-15.020386      	-15.397535
+10  	-15.652334      	-14.942851      	-15.364370
+11  	-15.638384      	-14.854218      	-15.320109
+12  	-15.649607      	-14.790758      	-15.301019
+13  	-15.615464      	-14.681933      	-15.236564
+14  	-15.582565      	-14.574352      	-15.173353
+15  	-15.580108      	-14.497212      	-15.140584
+16  	-15.583185      	-14.425606      	-15.113349
+
+
+
+--- Granger Causality Tests ---
+Testing if diff_log_cpi Granger-causes diff_log_inflation:
+Granger Causality
+number of lags (no zero) 1
+ssr based F test:         F=2.3037  , p=0.1308  , df_denom=178, df_num=1
+ssr based chi2 test:   chi2=2.3425  , p=0.1259  , df=1
+likelihood ratio test: chi2=2.3275  , p=0.1271  , df=1
+parameter F test:         F=2.3037  , p=0.1308  , df_denom=178, df_num=1
+
+Granger Causality
+number of lags (no zero) 2
+ssr based F test:         F=1.4660  , p=0.2337  , df_denom=175, df_num=2
+ssr based chi2 test:   chi2=3.0159  , p=0.2214  , df=2
+likelihood ratio test: chi2=2.9909  , p=0.2242  , df=2
+parameter F test:         F=1.4660  , p=0.2337  , df_denom=175, df_num=2
+
+Granger Causality
+number of lags (no zero) 3
+ssr based F test:         F=1.6663  , p=0.1761  , df_denom=172, df_num=3
+ssr based chi2 test:   chi2=5.2023  , p=0.1576  , df=3
+likelihood ratio test: chi2=5.1282  , p=0.1626  , df=3
+parameter F test:         F=1.6663  , p=0.1761  , df_denom=172, df_num=3
+
+Granger Causality
+number of lags (no zero) 4
+ssr based F test:         F=1.2842  , p=0.2782  , df_denom=169, df_num=4
+ssr based chi2 test:   chi2=5.4105  , p=0.2477  , df=4
+likelihood ratio test: chi2=5.3299  , p=0.2551  , df=4
+parameter F test:         F=1.2842  , p=0.2782  , df_denom=169, df_num=4
+
+Granger Causality
+number of lags (no zero) 5
+ssr based F test:         F=1.0505  , p=0.3899  , df_denom=166, df_num=5
+ssr based chi2 test:   chi2=5.6007  , p=0.3470  , df=5
+likelihood ratio test: chi2=5.5139  , p=0.3564  , df=5
+parameter F test:         F=1.0505  , p=0.3899  , df_denom=166, df_num=5
+
+Granger Causality
+number of lags (no zero) 6
+ssr based F test:         F=1.5114  , p=0.1774  , df_denom=163, df_num=6
+ssr based chi2 test:   chi2=9.7916  , p=0.1337  , df=6
+likelihood ratio test: chi2=9.5289  , p=0.1459  , df=6
+parameter F test:         F=1.5114  , p=0.1774  , df_denom=163, df_num=6
+
+Granger Causality
+number of lags (no zero) 7
+ssr based F test:         F=1.3010  , p=0.2530  , df_denom=160, df_num=7
+ssr based chi2 test:   chi2=9.9611  , p=0.1908  , df=7
+likelihood ratio test: chi2=9.6879  , p=0.2070  , df=7
+parameter F test:         F=1.3010  , p=0.2530  , df_denom=160, df_num=7
+
+Granger Causality
+number of lags (no zero) 8
+ssr based F test:         F=1.1681  , p=0.3218  , df_denom=157, df_num=8
+ssr based chi2 test:   chi2=10.3562 , p=0.2409  , df=8
+likelihood ratio test: chi2=10.0597 , p=0.2609  , df=8
+parameter F test:         F=1.1681  , p=0.3218  , df_denom=157, df_num=8
+
+Granger Causality
+number of lags (no zero) 9
+ssr based F test:         F=1.0281  , p=0.4201  , df_denom=154, df_num=9
+ssr based chi2 test:   chi2=10.3947 , p=0.3195  , df=9
+likelihood ratio test: chi2=10.0944 , p=0.3429  , df=9
+parameter F test:         F=1.0281  , p=0.4201  , df_denom=154, df_num=9
+
+Granger Causality
+number of lags (no zero) 10
+ssr based F test:         F=0.9459  , p=0.4932  , df_denom=151, df_num=10
+ssr based chi2 test:   chi2=10.7745 , p=0.3754  , df=10
+likelihood ratio test: chi2=10.4505 , p=0.4019  , df=10
+parameter F test:         F=0.9459  , p=0.4932  , df_denom=151, df_num=10
+
+Granger Causality
+number of lags (no zero) 11
+ssr based F test:         F=1.0305  , p=0.4226  , df_denom=148, df_num=11
+ssr based chi2 test:   chi2=13.0970 , p=0.2870  , df=11
+likelihood ratio test: chi2=12.6197 , p=0.3189  , df=11
+parameter F test:         F=1.0305  , p=0.4226  , df_denom=148, df_num=11
+
+Granger Causality
+number of lags (no zero) 12
+ssr based F test:         F=0.9619  , p=0.4880  , df_denom=145, df_num=12
+ssr based chi2 test:   chi2=13.5326 , p=0.3315  , df=12
+likelihood ratio test: chi2=13.0210 , p=0.3675  , df=12
+parameter F test:         F=0.9619  , p=0.4880  , df_denom=145, df_num=12
+
+Granger Causality
+number of lags (no zero) 13
+ssr based F test:         F=0.8964  , p=0.5584  , df_denom=142, df_num=13
+ssr based chi2 test:   chi2=13.8696 , p=0.3831  , df=13
+likelihood ratio test: chi2=13.3298 , p=0.4227  , df=13
+parameter F test:         F=0.8964  , p=0.5584  , df_denom=142, df_num=13
+
+Granger Causality
+number of lags (no zero) 14
+ssr based F test:         F=1.1919  , p=0.2881  , df_denom=139, df_num=14
+ssr based chi2 test:   chi2=20.1677 , p=0.1249  , df=14
+likelihood ratio test: chi2=19.0461 , p=0.1632  , df=14
+parameter F test:         F=1.1919  , p=0.2881  , df_denom=139, df_num=14
+
+Granger Causality
+number of lags (no zero) 15
+ssr based F test:         F=1.4829  , p=0.1198  , df_denom=136, df_num=15
+ssr based chi2 test:   chi2=27.3130 , p=0.0263  , df=15
+likelihood ratio test: chi2=25.2966 , p=0.0461  , df=15
+parameter F test:         F=1.4829  , p=0.1198  , df_denom=136, df_num=15

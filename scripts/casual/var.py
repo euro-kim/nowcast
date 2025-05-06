@@ -35,7 +35,7 @@ df.set_index('time', inplace=True)
 # Set frequency to monthly start ('MS')
 df = df.asfreq('MS')
 
-original_features = ['cpi', 'ppi']
+original_features = [ 'cpi','inflation']
 var0 = original_features[0]
 var1 = original_features[1]
 
@@ -82,6 +82,9 @@ with open(f"{path}{filename}.txt", "w") as f:
     f.write('\n')
     f.write('\n')
     f.write('\n--- ADF Statistics ---\n')
+    for feature in original_features:
+        p_value = adf_test(df[feature], feature)
+        f.write(f"{p_value}\n")
     for feature in diff_log_features:
         p_value = adf_test(df[feature], feature)
         f.write(f"{p_value}\n")

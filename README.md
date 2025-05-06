@@ -25,7 +25,7 @@ This guide will help you get up and running with the project.
 
     Make sure you have the following installed on your system:
     
-    * **Python 3.12+** ([Download Python](https://www.python.org/downloads/))
+    * **Python** ([Download Python](https://www.python.org/downloads/))
     * **pip** (should come with your Python installation)
 
 
@@ -33,7 +33,6 @@ This guide will help you get up and running with the project.
 
     ```bash
     git clone https://github.com/euro-kim/nowcast
-    cd nowcast
     ```
 
 2.  **Install the required Python packages:**
@@ -78,7 +77,7 @@ This guide will help you get up and running with the project.
     |---------------|---------------------------------------------------------------------------------|
     | forecast      | Forecasting (prediction)                                                        |
     | casual        | Casual Inference. Only supports VAR                                             |
-                                                                    |
+
 
     ### Available Models
     
@@ -89,9 +88,8 @@ This guide will help you get up and running with the project.
     | arima         | ARIMA model                                                                     |
     | linear        | Simple Linear Regression                                                        |
     | var           | VAR model                                                                       |
-    | LSTM          | LSTM model                                                                      |
-    | GRU           | GRU model                                                                       |
-
+    | lstm          | LSTM model                                                                      |
+    | gru           | GRU model                                                                       |
 
     
     ### Available Arguments

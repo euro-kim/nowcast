@@ -9,7 +9,7 @@ This is a source code containg simple code to predict economic variables with we
 1. **Included Models**
     
     Casual Models: VAR <br />
-    Forecasting Models: Linear Model, VAR, LSTM, GRU <br />
+    Forecasting Models: ARIMA, Linear Model, VAR, LSTM, GRU <br />
 
 2. **Usage**
 

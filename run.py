@@ -5,6 +5,8 @@ hint = "Usage: python main.py <activity> <model_name> \n" \
 "   [--seed         <type=int, default=1>] \n" \
 "   [--horizon      <type=int, default=12>] \n" \
 "   [--lag          <type=int, default=12>] \n" \
+"   [--p          <type=int, default=1>] \n" \
+"   [--q          <type=int, default=1>] \n" \
 "   [--maxlags      <type=int, default=15>] \n" \
 "   [--neurons      <type=int, default=200>] \n" \
 "   [--batch_size   <type=int, default=16>] \n" \

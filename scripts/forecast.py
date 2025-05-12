@@ -5,6 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LinearRegression
 from statsmodels.tsa.api import VAR
 from statsmodels.tsa.arima.model import ARIMA
+from arch import arch_model
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # 0 = all logs, 1 = filter INFO, 2 = filter WARNING, 3 = filter ERROR
 
@@ -20,7 +21,7 @@ def create_sequences(data, lag, input_cols_idx, target_col_idx):
         y.append(data[i, target_col_idx])
     return np.array(X), np.array(y)
 
-def arima(seed, maxlags, horizon, data_file, var0, ic):
+def arima(seed, maxlags, horizon, data_file, var0):
     np.random.seed(seed)
     
     # Load and preprocess data
@@ -61,6 +62,52 @@ def arima(seed, maxlags, horizon, data_file, var0, ic):
     y_pred_diff_log = forecast_diff_log.values
     forecast_index = df.index[-horizon:]
     y_pred = forecast_values.values
+
+    return y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log
+
+
+def garch(seed, p, q, horizon, data_file, var0):
+    np.random.seed(seed)
+    
+    # Load and preprocess data
+    df = init_df(data_file)
+    df[f'log_{var0}'] = np.log(df[var0] + 1e-6)
+    df[f'diff_log_{var0}'] = df[f'log_{var0}'].diff()
+
+    series = df[f'diff_log_{var0}'].dropna()
+    train_data = series[:-horizon]
+    test_data = series[-horizon:]
+
+    if len(train_data) < max(p, q) + 1:
+        print(f"Error: Not enough training data. len(train_data)={len(train_data)}, required={max(p, q) + 1}")
+        sys.exit(1)
+
+    try:
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore")
+            model = arch_model(train_data, p=p, q=q, vol='GARCH', dist='normal')
+            fitted_model = model.fit(disp='off')
+    except Exception as e:
+        print(f"Error fitting GARCH model: {e}")
+        sys.exit(1)
+
+    # Forecast in differenced log space
+    forecast_result = fitted_model.forecast(horizon=horizon)
+    forecast_diff_log = forecast_result.mean.iloc[-1].values
+
+    # Convert forecast back to original scale
+    last_log_value = df[f'log_{var0}'].iloc[-horizon - 1]
+    forecast_log = np.cumsum(forecast_diff_log) + last_log_value
+    forecast_values = np.exp(forecast_log) - 1e-6
+
+    # Actual values
+    y_true = df[var0].iloc[-horizon:]
+    y_past = df[var0].iloc[:-(horizon)]
+    y_true_diff_log = df[f'diff_log_{var0}'].iloc[-horizon:].values
+    y_past_diff_log = df[f'diff_log_{var0}'].iloc[:-(horizon)].dropna().values
+    y_pred_diff_log = forecast_diff_log
+    forecast_index = df.index[-horizon:]
+    y_pred = forecast_values
 
     return y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log
 
@@ -204,9 +251,9 @@ def lstm(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var
     log_pred = np.cumsum(y_pred_diff_log) + last_log_val
     log_true = np.cumsum(y_true_diff_log) + last_log_val
 
-    y_pred = np.exp(log_pred) - 1e-6
-    y_true = np.exp(log_true) - 1e-6
+    y_true = df[var0].iloc[-horizon:]
     y_past = df[var0].iloc[:-(horizon)]
+    y_pred = np.exp(log_pred) - 1e-6
     y_past_diff_log = df[f'diff_log_{var0}'].iloc[:-(horizon)].dropna().values
     forecast_index = df.index[-horizon:]
     
@@ -261,7 +308,7 @@ def gru(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0
     log_true = np.cumsum(y_true_diff_log) + last_log_val
 
     y_pred = np.exp(log_pred) - 1e-6
-    y_true = np.exp(log_true) - 1e-6
+    y_true = df[var0].iloc[-horizon:]
     y_past = df[var0].iloc[:-(horizon)]
     y_past_diff_log = df[f'diff_log_{var0}'].iloc[:-(horizon)].dropna().values
     forecast_index = df.index[-horizon:]

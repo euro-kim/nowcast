@@ -46,9 +46,18 @@ def evaluate_forecast(y_true, y_pred, var_name):
     rmse = np.sqrt(mean_squared_error(y_true, y_pred))
     mae = mean_absolute_error(y_true, y_pred)
     r2 = r2_score(y_true, y_pred)
+    y_true = np.array(y_true)
+    y_pred = np.array(y_pred)
+    mask = y_true != 0
+    denominator = (np.abs(y_true) + np.abs(y_pred)) / 2
+    mape = np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100
+    smape = np.mean(np.abs(y_true[mask] - y_pred[mask]) / denominator[mask]) * 100
+
     print(f"{var_name} Forecast RMSE: {rmse:.4f}")
     print(f"{var_name} Forecast MAE: {mae:.4f}")
     print(f"{var_name} Forecast R²: {r2:.4f}")
+    print(f"{var_name} Forecast MAPE: {mape:.4f}%")
+    print(f"{var_name} Forecast sMAPE: {smape:.4f}%")
     
     return rmse, mae, r2
 

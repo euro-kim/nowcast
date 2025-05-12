@@ -2,30 +2,32 @@
 import sys, csv
 import argparse
 from scripts.casual import casual_var
-from scripts.forecast import arima, linear, var, lstm, gru
+from scripts.forecast import arima, garch, linear, var, lstm, gru
 from scripts.common import evaluate_forecast, plot_forecast, plot_forecast_past
 
 
 def main():
     parser = argparse.ArgumentParser(description=f"Run an model for time series forecasting.") 
     # args
-    parser.add_argument("activity", help="The name of the activity (e.g., casual, project)")
-    parser.add_argument("model_name", help="The type of the model (e.g., lstm, transformer).")
+    parser.add_argument("activity", help="The name of the activity (e.g., casual, forecast)")
+    parser.add_argument("model_name", help="The type of the model (e.g., lstm, gru).")
     # kwargs
     parser.add_argument("--seed", type=int, default=1, help="Seed for reproducibility.")
     parser.add_argument("--horizon", type=int, default=12, help="Number of steps to forecast (Horizon).")
-    parser.add_argument("--lag", type=int, default=12, help="Sequence length (lag).")
-    parser.add_argument("--maxlags", type=int, default=15, help="Maximum number of lags to consider.")
-    parser.add_argument("--neurons", type=int, default=200, help="Number of neurons in the LSTM layer.") 
-    parser.add_argument("--layers", type=int, default=1, help="Number of layers in the for Deep Learning.") 
-    parser.add_argument("--batch_size", type=int, default=16, help="Batch size for training.")
-    parser.add_argument("--epochs", type=int, default=100, help="Number of training epochs.")
+    parser.add_argument("--lag", type=int, default=12, help="(VAR) Sequence length")
+    parser.add_argument("--p", type=int, default=1, help="(GARCH) Number of lagged squared residuals")
+    parser.add_argument("--q", type=int, default=1, help="(GARCH) Number of lagged variances")
+    parser.add_argument("--maxlags", type=int, default=15, help="(VAR) Maximum number of lags to consider.")
+    parser.add_argument("--neurons", type=int, default=200, help="(RNN) Number of neurons in the layer.") 
+    parser.add_argument("--layers", type=int, default=1, help="(RNN) Number of layers in the for Deep Learning.") 
+    parser.add_argument("--batch_size", type=int, default=16, help="(RNN) Batch size for training.")
+    parser.add_argument("--epochs", type=int, default=100, help="(RNN) Number of training epochs.")
     parser.add_argument("--data_file", type=str, default="assets/data.json", help="Path to the data file (JSON).")
     parser.add_argument("--var0", type=str, default="cpi", help="Response Variable")
     parser.add_argument("--var1", type=str, default="ppi", help="Explanatory Variable")
-    parser.add_argument("--ic", type=str, default="aic", help="Information Criterion such as AIC, BIC")
-    parser.add_argument("--optimizer", type=str, default="adam", help="Optimizer")
-    parser.add_argument("--loss", type=str, default="mean_squared_error", help="Loss Function.")
+    parser.add_argument("--ic", type=str, default="aic", help="(VAR) Information Criterion such as AIC, BIC")
+    parser.add_argument("--optimizer", type=str, default="adam", help="(VAR) Optimizer")
+    parser.add_argument("--loss", type=str, default="mean_squared_error", help="(VAR) Loss Function.")
     
     args = parser.parse_args()
     
@@ -37,6 +39,8 @@ def main():
     seed = args.seed
     horizon = args.horizon
     lag = args.lag
+    p = args.p
+    q = args.q
     maxlags = args.maxlags
     neurons = args.neurons
     layers = args.layers
@@ -57,7 +61,9 @@ def main():
             sys.exit(1)
     elif acivity == 'forecast':
         if model_name == 'arima':
-            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = arima(seed, maxlags, horizon, data_file, var0, ic)
+            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = arima(seed, maxlags, horizon, data_file, var0)
+        if model_name == 'garch':
+            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = garch(seed, p, q, horizon, data_file, var0)
         elif model_name == 'linear':
             y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = linear(seed, horizon, data_file, var0, var1)
         elif model_name == 'var':
@@ -67,8 +73,10 @@ def main():
         elif model_name == 'gru':
             y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = gru(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss)
         # Evaluation
-        rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
+        print('--log diff benchmark---')
         rmse, mae, r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
+        print('---default benchmark---')
+        rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
 
         # Plot
         if (not layers == 1) and (model_name== 'lstm' or model_name == 'gru'): model_name += f" layer{layers}" 
@@ -76,7 +84,7 @@ def main():
         plot_forecast(True, y_true_diff_log, y_pred_diff_log, var0, var1, forecast_index, title_suffix=f'{model_name}') 
         plot_forecast_past(False, y_past ,y_true, y_pred, var0, var1, forecast_index, title_suffix=f'{model_name}')
     elif acivity == 'generator':
-            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = arima(seed, maxlags, horizon, data_file, var0, ic)
+            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = arima(seed, maxlags, horizon, data_file, var0)
             rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
             diff_log_rmse, diff_log_mae, diff_log_r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
             dic={

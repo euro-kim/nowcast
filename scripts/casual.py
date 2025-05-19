@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 from dtaidistance import dtw
 from statsmodels.tsa.stattools import adfuller

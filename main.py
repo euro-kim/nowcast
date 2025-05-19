@@ -65,13 +65,13 @@ def main():
         elif model_name == 'garch':
             result = garch(seed, p, q, horizon, data_file, var0)
         elif model_name == 'linear':
-            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = linear(seed, horizon, data_file, var0, var1)
+            result = linear(seed, horizon, data_file, var0, var1)
         elif model_name == 'var':
-            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = var(seed, maxlags, horizon, data_file, var0, var1, ic)
+            result = var(seed, maxlags, horizon, data_file, var0, var1, ic)
         elif model_name == 'lstm':
-            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = lstm(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss)
+            result = lstm(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss)
         elif model_name == 'gru':
-            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = gru(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss)
+            result = gru(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss)
         # Evaluation
         print('--benchmark---')
         result.bench()
@@ -79,96 +79,76 @@ def main():
 
         # Plot
         if (not layers == 1) and (model_name== 'lstm' or model_name == 'gru'): model_name += f" layer{layers}" 
-        plot_forecast(False, y_true, y_pred, var0, var1, forecast_index, title_suffix=f'{model_name}') 
-        plot_forecast(True, y_true_diff_log, y_pred_diff_log, var0, var1, forecast_index, title_suffix=f'{model_name}') 
-        plot_forecast_past(False, y_past ,y_true, y_pred, var0, var1, forecast_index, title_suffix=f'{model_name}')
+
+        result.plot(True,True)
+        result.plot(True,False)
+        result.plot(False,False)
+        result.plot(False,True)
+
     elif acivity == 'generator':
-            # ARIMA
-            dicts = []
-            result = arima(seed, maxlags, horizon, data_file, var0)
+        # ARIMA
+        dicts = []
+        result = arima(seed, maxlags, horizon, data_file, var0)
+        result.bench()
+        dic = result.benchmarks.to_dict()
+        dicts.append(dic)
+        header = dicts[0].keys()
+        with open(f'results/forecast/csv/arima, {var0}, {var1}.csv', 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=header)
+            writer.writeheader()
+            writer.writerows(dicts)
+        # linear
+        dicts = []
+        result = linear(seed, horizon, data_file, var0, var1)
+        result.bench()
+        dic = result.benchmarks.to_dict()
+        dicts.append(dic)
+        header = dicts[0].keys()
+        with open(f'results/forecast/csv/linear, {var0}, {var1}.csv', 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=header)
+            writer.writeheader()
+            writer.writerows(dicts)
+
+        # VAR 
+        dicts = []
+        result = var(seed, maxlags, horizon, data_file, var0, var1, ic)
+        result.bench()
+        dic = result.benchmarks.to_dict()
+        dicts.append(dic)
+        header = dicts[0].keys()
+        with open(f'results/forecast/csv/VAR, {var0}, {var1}.csv', 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=header)
+            writer.writeheader()
+            writer.writerows(dicts)
+        dicts=[]
+
+        # LSTM
+        for seed in range(1,11): 
+            result = lstm(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss)
             result.bench()
             dic = result.benchmarks.to_dict()
             dicts.append(dic)
-            header = dicts[0].keys()
-            with open(f'results/forecast/csv/arima, {var0}, {var1}.csv', 'w', newline='') as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames=header)
-                writer.writeheader()
-                writer.writerows(dicts)
 
-            dicts=[]
-            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log= linear(seed, horizon, data_file, var0, var1)
-            rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
-            diff_log_rmse, diff_log_mae, diff_log_r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
-            dic={
-                    'rmse': rmse,
-                    'mae': mae,
-                    'r2': r2,
-                    'diff_log_rmse': diff_log_rmse,
-                    'diff_log_mae': diff_log_mae,
-                    'diff_log_r2': diff_log_r2,
-            }
+        header = dicts[0].keys()
+        with open(f'results/forecast/csv/LSTM, {var0}, {var1}.csv', 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=header)
+            writer.writeheader()
+            writer.writerows(dicts)
+
+
+        # GRU
+        for seed in range(1,11): 
+            result = gru(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss)
+            result.bench()
+            dic = result.benchmarks.to_dict()
             dicts.append(dic)
-            header = dicts[0].keys()
-            with open(f'results/forecast/csv/linear, {var0}, {var1}.csv', 'w', newline='') as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames=header)
-                writer.writeheader()
-                writer.writerows(dicts)
-            dicts=[]
-            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log= var(seed, maxlags, horizon, data_file, var0, var1, ic)
-            rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
-            diff_log_rmse, diff_log_mae, diff_log_r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
-            dic={
-                'rmse': rmse,
-                'mae': mae,
-                'r2': r2,
-                'diff_log_rmse': diff_log_rmse,
-                'diff_log_mae': diff_log_mae,
-                'diff_log_r2': diff_log_r2,
-            }
-            dicts.append(dic)
-            header = dicts[0].keys()
-            with open(f'results/forecast/csv/var, {var0}, {var1}.csv', 'w', newline='') as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames=header)
-                writer.writeheader()
-                writer.writerows(dicts)
-            dicts=[]
-            for seed in range(1,11): 
-                y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log= lstm(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss)
-                rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
-                diff_log_rmse, diff_log_mae, diff_log_r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
-                dic={
-                     'rmse': rmse,
-                     'mae': mae,
-                     'r2': r2,
-                     'diff_log_rmse': diff_log_rmse,
-                     'diff_log_mae': diff_log_mae,
-                     'diff_log_r2': diff_log_r2,
-                }
-                dicts.append(dic)
-            header = dicts[0].keys()
-            with open(f'results/forecast/csv/lstm, {var0}, {var1}, {layers}layer.csv', 'w', newline='') as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames=header)
-                writer.writeheader()
-                writer.writerows(dicts)
-            dicts=[]
-            for seed in range(1,11): 
-                y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log= gru(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss)
-                rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
-                diff_log_rmse, diff_log_mae, diff_log_r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
-                dic={
-                     'rmse': rmse,
-                     'mae': mae,
-                     'r2': r2,
-                     'diff_log_rmse': diff_log_rmse,
-                     'diff_log_mae': diff_log_mae,
-                     'diff_log_r2': diff_log_r2,
-                }
-                dicts.append(dic)
-            header = dicts[0].keys()
-            with open(f'results/forecast/csv/gru, {var0}, {var1}, {layers}layer.csv.csv', 'w', newline='') as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames=header)
-                writer.writeheader()
-                writer.writerows(dicts)
+
+        header = dicts[0].keys()
+        with open(f'results/forecast/csv/GRU, {var0}, {var1}.csv', 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=header)
+            writer.writeheader()
+            writer.writerows(dicts)
+          
     else: 
         print("Error: The first argument should be 'casual' or 'forecast'")
         print("Example: python run.py forecast gru --var0 'ppi' --var1 'inflation'")

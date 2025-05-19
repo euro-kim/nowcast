@@ -62,6 +62,55 @@ class ResponseVariable:
         else:
             self.benchmarks = Benchmarks(rmse, mae, r2, mape, smape)
 
+    def plot(self, show_past: bool = False, diff: bool = False):
+        """
+        Plots the forecast, optionally including historical data.
+
+        Args:
+            show_past (bool, optional): If True, includes historical data in the plot. Defaults to False.
+            diff (bool, optional): If True, plots the differenced log values. Defaults to False.
+            title_suffix (str, optional): Additional text for the plot title. Defaults to "".
+        """
+        if self.forecast_index is None or (self.true is None and self.pred is None):
+            print("Error: forecast_index and at least one of 'true' or 'pred' must be set.")
+            return
+
+        actual = self.diff_log_true if diff and self.diff_log_true is not None else self.true
+        predicted = self.diff_log_pred if diff and self.diff_log_pred is not None else self.pred
+        history = self.diff_log_past if diff and self.diff_log_past is not None and show_past else self.past if show_past else None
+
+        plt.figure(figsize=(12, 6) if show_past else (10, 5))
+
+        if show_past:
+            if self.past is None:
+                print("Warning: 'past' data is not available, cannot show historical data.")
+            else:
+                n = 40  # Number of history observations to be displayed
+                try:
+                    history_to_plot = history.iloc[-n:]
+                except:
+                    history_to_plot = pd.Series(history[-n:])
+                plt.plot(history_to_plot.index, history_to_plot, label=f'Historical', alpha=0.7)
+
+        if actual is not None:
+            plt.plot(self.forecast_index, actual, label=f'Actual', marker='o')
+        if predicted is not None:
+            plt.plot(self.forecast_index, predicted, label=f'Predicted', marker='x')
+
+        title = f"{self.title}"
+        if show_past:
+            title += f" (showing {n} history)"
+        plt.title(title)
+        plt.xlabel("Date")
+        plt.ylabel('')
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+
+        filename_suffix = "history" if show_past else ""
+        # plt.savefig(f"results/forecast/png/{title_suffix}, {var0}, {var1} {filename_suffix}.png")
+        plt.show()
+
 class Benchmarks:
     def __init__(self, 
                  rmse : float,

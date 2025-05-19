@@ -3,7 +3,7 @@ import sys, csv
 import argparse
 from scripts.casual import casual_var
 from scripts.forecast import arima, garch, linear, var, lstm, gru
-from scripts.common import evaluate_forecast, plot_forecast, plot_forecast_past
+from scripts.common import ResponseVariable, plot_forecast, plot_forecast_past
 
 
 def main():
@@ -61,9 +61,9 @@ def main():
             sys.exit(1)
     elif acivity == 'forecast':
         if model_name == 'arima':
-            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = arima(seed, maxlags, horizon, data_file, var0)
-        if model_name == 'garch':
-            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = garch(seed, p, q, horizon, data_file, var0)
+            result = arima(seed, maxlags, horizon, data_file, var0)
+        elif model_name == 'garch':
+            result = garch(seed, p, q, horizon, data_file, var0)
         elif model_name == 'linear':
             y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = linear(seed, horizon, data_file, var0, var1)
         elif model_name == 'var':
@@ -73,10 +73,9 @@ def main():
         elif model_name == 'gru':
             y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = gru(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss)
         # Evaluation
-        print('--log diff benchmark---')
-        rmse, mae, r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
-        print('---default benchmark---')
-        rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
+        print('--benchmark---')
+        result.bench()
+        print(result.benchmarks.__repr__())
 
         # Plot
         if (not layers == 1) and (model_name== 'lstm' or model_name == 'gru'): model_name += f" layer{layers}" 
@@ -84,23 +83,18 @@ def main():
         plot_forecast(True, y_true_diff_log, y_pred_diff_log, var0, var1, forecast_index, title_suffix=f'{model_name}') 
         plot_forecast_past(False, y_past ,y_true, y_pred, var0, var1, forecast_index, title_suffix=f'{model_name}')
     elif acivity == 'generator':
-            y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log = arima(seed, maxlags, horizon, data_file, var0)
-            rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)
-            diff_log_rmse, diff_log_mae, diff_log_r2 = evaluate_forecast(y_true_diff_log, y_pred_diff_log, var0)
-            dic={
-                    'rmse': rmse,
-                    'mae': mae,
-                    'r2': r2,
-                    'diff_log_rmse': diff_log_rmse,
-                    'diff_log_mae': diff_log_mae,
-                    'diff_log_r2': diff_log_r2,
-            }
+            # ARIMA
+            dicts = []
+            result = arima(seed, maxlags, horizon, data_file, var0)
+            result.bench()
+            dic = result.benchmarks.to_dict()
             dicts.append(dic)
             header = dicts[0].keys()
             with open(f'results/forecast/csv/arima, {var0}, {var1}.csv', 'w', newline='') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=header)
                 writer.writeheader()
                 writer.writerows(dicts)
+
             dicts=[]
             y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log= linear(seed, horizon, data_file, var0, var1)
             rmse, mae, r2 = evaluate_forecast(y_true, y_pred, var0)

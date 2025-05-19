@@ -1,37 +1,53 @@
+import os, warnings, sys
 import numpy as np
+from numpy import array
 import pandas as pd
-from .common import init_df, set_seeds
+from pandas import DataFrame, Series
+from .common import ResponseVariable, init_df, diff_df, set_seeds
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LinearRegression
 from statsmodels.tsa.api import VAR
 from statsmodels.tsa.arima.model import ARIMA
 from arch import arch_model
-import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # 0 = all logs, 1 = filter INFO, 2 = filter WARNING, 3 = filter ERROR
 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, GRU, Dense  # Changed GRU to LSTM
-import warnings
-import sys
+from tensorflow.keras.layers import LSTM, GRU, Dense  
 
-def create_sequences(data, lag, input_cols_idx, target_col_idx):
+def create_sequences(data, lag, input_cols_idx, target_col_idx): 
     X, y = [], []
     for i in range(lag, len(data)):
         X.append(data[i - lag:i, input_cols_idx])  # shape: (lag, num_features)
         y.append(data[i, target_col_idx])
     return np.array(X), np.array(y)
 
-def arima(seed, maxlags, horizon, data_file, var0):
+def arima(seed, maxlags, horizon, data_file, var0) -> ResponseVariable:
     np.random.seed(seed)
     
     # Load and preprocess data
-    df = init_df(data_file)
-    df[f'log_{var0}'] = np.log(df[var0] + 1e-6)
-    df[f'diff_log_{var0}'] = df[f'log_{var0}'].diff()
+    df : DataFrame = init_df(data_file)
+    df : DataFrame = diff_df(df, var0)
 
-    series = df[f'diff_log_{var0}'].dropna()
-    train_data = series[:-horizon]
-    test_data = series[-horizon:]
+    # Result initialization
+    result = ResponseVariable()
+    result.title = f'ARIMA {var0}'  
+    result.forecast_index = df.index[-horizon:]
+
+    # Define Series
+    series : Series = df[var0]
+    log_series : Series = df[f'log_{var0}']
+    diff_log_series : Series = df[f'diff_log_{var0}']
+
+    # Actual values    
+    result.past = series.iloc[:-(horizon)]
+    result.true = series.iloc[-horizon:]
+
+    # Actual diff log values
+    result.diff_log_past = diff_log_series.iloc[:-(horizon)]
+    result.diff_log_true = diff_log_series.iloc[-horizon:]
+
+
+    train_data : Series = diff_log_series[:-horizon] # same as ## series.iloc[:-(horizon)] 
 
     if len(train_data) < maxlags:
         print(f"Error: Not enough training data. len(train_data)={len(train_data)}, maxlags={maxlags}")
@@ -43,40 +59,47 @@ def arima(seed, maxlags, horizon, data_file, var0):
             model = ARIMA(train_data, order=(maxlags, 0, 0))
             fitted_model = model.fit()
     except Exception as e:
-        print(f"Error fitting AR model: {e}")
+        print(f"Error fitting ARIMA model: {e}")
         sys.exit(1)
 
     # Forecast in differenced log space
-    forecast_diff_log = fitted_model.forecast(steps=horizon)
+    result.diff_log_pred = fitted_model.forecast(steps=horizon)
 
     # Convert forecast back to original scale
-    last_log_value = df[f'log_{var0}'].iloc[-horizon - 1]
-    forecast_log = forecast_diff_log.cumsum() + last_log_value
-    forecast_values = np.exp(forecast_log) - 1e-6
+    last_log : Series = log_series.iloc[-horizon - 1]
+    forecast_log : Series = result.diff_log_pred.cumsum() + last_log
+    result.pred  = np.exp(forecast_log) - 1e-6
 
-    # Actual values
-    y_true = df[var0].iloc[-horizon:]
-    y_past = df[var0].iloc[:-(horizon)]
-    y_true_diff_log = df[f'diff_log_{var0}'].iloc[-horizon:].values
-    y_past_diff_log = df[f'diff_log_{var0}'].iloc[:-(horizon)].dropna().values
-    y_pred_diff_log = forecast_diff_log.values
-    forecast_index = df.index[-horizon:]
-    y_pred = forecast_values.values
-
-    return y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log
+    return result
 
 
-def garch(seed, p, q, horizon, data_file, var0):
+def garch(seed, p, q, horizon, data_file, var0) -> ResponseVariable:
     np.random.seed(seed)
     
     # Load and preprocess data
     df = init_df(data_file)
-    df[f'log_{var0}'] = np.log(df[var0] + 1e-6)
-    df[f'diff_log_{var0}'] = df[f'log_{var0}'].diff()
+    df = diff_df(df, var0)
 
-    series = df[f'diff_log_{var0}'].dropna()
-    train_data = series[:-horizon]
-    test_data = series[-horizon:]
+    # Define Series
+    series : Series = df[var0]
+    log_series : Series = df[f'log_{var0}']
+    diff_log_series : Series = df[f'diff_log_{var0}']
+
+    # Result initialization
+    result = ResponseVariable()
+    result.title = f'GARCH {var0}'  
+    result.forecast_index = df.index[-horizon:]
+
+    # Actual values    
+    result.past = series.iloc[:-(horizon)]
+    result.true = series.iloc[-horizon:]
+
+    # Actual diff log values
+    result.diff_log_past = diff_log_series.iloc[:-(horizon)]
+    result.diff_log_true = diff_log_series.iloc[-horizon:]
+
+
+    train_data : Series = diff_log_series[:-horizon]
 
     if len(train_data) < max(p, q) + 1:
         print(f"Error: Not enough training data. len(train_data)={len(train_data)}, required={max(p, q) + 1}")
@@ -93,35 +116,22 @@ def garch(seed, p, q, horizon, data_file, var0):
 
     # Forecast in differenced log space
     forecast_result = fitted_model.forecast(horizon=horizon)
-    forecast_diff_log = forecast_result.mean.iloc[-1].values
+    result.diff_log_pred = forecast_result.mean.iloc[-1]
 
     # Convert forecast back to original scale
-    last_log_value = df[f'log_{var0}'].iloc[-horizon - 1]
-    forecast_log = np.cumsum(forecast_diff_log) + last_log_value
-    forecast_values = np.exp(forecast_log) - 1e-6
+    last_log : Series = log_series.iloc[-horizon - 1]
+    forecast_log : Series = result.diff_log_pred.cumsum() + last_log
+    result.pred  = np.exp(forecast_log) - 1e-6
 
-    # Actual values
-    y_true = df[var0].iloc[-horizon:]
-    y_past = df[var0].iloc[:-(horizon)]
-    y_true_diff_log = df[f'diff_log_{var0}'].iloc[-horizon:].values
-    y_past_diff_log = df[f'diff_log_{var0}'].iloc[:-(horizon)].dropna().values
-    y_pred_diff_log = forecast_diff_log
-    forecast_index = df.index[-horizon:]
-    y_pred = forecast_values
-
-    return y_past, y_true, y_pred, forecast_index, y_past_diff_log, y_true_diff_log, y_pred_diff_log
+    return result
 
 def linear(seed, horizon, data_file, var0, var1):
     # Set seeds
     set_seeds(seed)
-    
+
     # Load and prepare data
     df = init_df(data_file)
-
-    df[f'log_{var0}'] = np.log(df[var0] + 1e-6)
-    df[f'log_{var1}'] = np.log(df[var1] + 1e-6)
-    df[f'diff_log_{var0}'] = df[f'log_{var0}'].diff()
-    df[f'diff_log_{var1}'] = df[f'log_{var1}'].diff()
+    df = diff_df(df, var0, var1)
 
     # Feature (X) and target (y)
     df_stationary = df[[f'diff_log_{var0}', f'diff_log_{var1}']].dropna()
@@ -159,12 +169,8 @@ def linear(seed, horizon, data_file, var0, var1):
 def var(seed, maxlags, horizon, data_file, var0, var1, ic):
     # Set seeds
     set_seeds(seed)
-    
     df = init_df(data_file)
-    df[f'log_{var0}'] = np.log(df[var0] + 1e-6)
-    df[f'log_{var1}'] = np.log(df[var1] + 1e-6)
-    df[f'diff_log_{var0}'] = df[f'log_{var0}'].diff()
-    df[f'diff_log_{var1}'] = df[f'log_{var1}'].diff()
+    df = diff_df(df, var0, var1)
 
     diff_log_features = [f'diff_log_{var0}', f'diff_log_{var1}']
     model_data = df[diff_log_features].dropna()
@@ -208,11 +214,8 @@ def var(seed, maxlags, horizon, data_file, var0, var1, ic):
 def lstm(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss):
     set_seeds(seed)
     df = init_df(data_file)
-    df[f'log_{var0}'] = np.log(df[var0] + 1e-6)
-    df[f'log_{var1}'] = np.log(df[var1] + 1e-6)
-    df[f'diff_log_{var0}'] = df[f'log_{var0}'].diff()
-    df[f'diff_log_{var1}'] = df[f'log_{var1}'].diff()
-    df.dropna(inplace=True)
+    df = diff_df(df, var0, var1)
+
     df['time_index'] = np.arange(len(df))
 
     features = [f'diff_log_{var1}', 'time_index']
@@ -264,11 +267,8 @@ def lstm(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var
 def gru(seed, horizon, lag, neurons, layers, epochs, batch_size, data_file, var0, var1, optimizer, loss):
     set_seeds(seed)
     df = init_df(data_file)
-    df[f'log_{var0}'] = np.log(df[var0] + 1e-6)
-    df[f'log_{var1}'] = np.log(df[var1] + 1e-6)
-    df[f'diff_log_{var0}'] = df[f'log_{var0}'].diff()
-    df[f'diff_log_{var1}'] = df[f'log_{var1}'].diff()
-    df.dropna(inplace=True)
+    df = diff_df(df, var0, var1)
+
     df['time_index'] = np.arange(len(df))
 
     features = [f'diff_log_{var1}', 'time_index']

@@ -1,12 +1,124 @@
+import json, os, random, sys
 import numpy as np
+from numpy import array
+import pandas as pd
+from pandas import DataFrame, DatetimeIndex, Series
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import matplotlib.pyplot as plt
-import random
-import os
 import tensorflow as tf
-import pandas as pd
-import sys
-import json
+
+class ResponseVariable:
+    def __init__(self, 
+                 title : str = None, 
+                 forecast_index : DatetimeIndex = None,
+                 past : Series = None, 
+                 true : Series = None, 
+                 pred : Series = None,
+                 diff_log_past : Series = None, 
+                 diff_log_true : Series = None, 
+                 diff_log_pred : Series = None,
+                 ):
+        self.title = title
+        self.forecast_index = forecast_index
+        self.past = past
+        self.true = true
+        self.pred = pred
+        self.diff_log_past = diff_log_past
+        self.diff_log_true = diff_log_true
+        self.diff_log_pred = diff_log_pred
+        self.benchmarks : Benchmarks = None
+
+    def __repr__(self):
+        return (f"ResponseVariable(forecast_index={self.forecast_index}, "
+                f"past={self.past}, true={self.true}, pred={self.pred}, "
+                f"diff_log_past={self.diff_log_past}, diff_log_true={self.diff_log_true}, "
+                f"diff_log_pred={self.diff_log_pred})")
+    def bench(self): 
+        try:
+            y_true : array = self.true.values
+            y_pred : array = self.pred.values
+            rmse = np.sqrt(mean_squared_error(y_true, y_pred))
+            mae = mean_absolute_error(y_true, y_pred)
+            r2 = r2_score(y_true, y_pred)
+            mask = y_true != 0
+            denominator = (np.abs(y_true) + np.abs(y_pred)) / 2
+            mape = np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100
+            smape = np.mean(np.abs(y_true[mask] - y_pred[mask]) / denominator[mask]) * 100
+        except: 
+            rmse, mae, r2, mape, smape = None, None, None, None, None
+        
+        if self.diff_log_true.empty == False and self.diff_log_pred.empty == False:
+            diff_log_y_true : array = self.diff_log_true.values
+            diff_log_y_pred : array = self.diff_log_pred.values
+            diff_log_rmse = np.sqrt(mean_squared_error(diff_log_y_true, diff_log_y_pred))
+            diff_log_mae = mean_absolute_error(diff_log_y_true, diff_log_y_pred)
+            diff_log_r2 = r2_score(diff_log_y_true, diff_log_y_pred)
+            diff_log_mask = diff_log_y_true != 0
+            diff_log_denominator = (np.abs(diff_log_y_true) + np.abs(diff_log_y_pred)) / 2
+            diff_log_mape = np.mean(np.abs((diff_log_y_true[diff_log_mask] - diff_log_y_pred[diff_log_mask]) / diff_log_y_true[diff_log_mask])) * 100
+            diff_log_smape = np.mean(np.abs(diff_log_y_true[diff_log_mask] - diff_log_y_pred[diff_log_mask]) / diff_log_denominator[diff_log_mask]) * 100
+            self.benchmarks = Benchmarks(rmse, mae, r2, mape, smape, diff_log_rmse, diff_log_mae, diff_log_r2, diff_log_mape, diff_log_smape)
+        
+        else:
+            self.benchmarks = Benchmarks(rmse, mae, r2, mape, smape)
+
+class Benchmarks:
+    def __init__(self, 
+                 rmse : float,
+                 mae : float, 
+                 r2 : float,
+                 mape : float,
+                 smape : float,
+                 diff_log_rmse : float = None,
+                 diff_log_mae : float = None, 
+                 diff_log_r2 : float = None,
+                 diff_log_mape : float = None,
+                 diff_log_smape : float = None,
+                 ):
+        self.rmse = rmse
+        self.mae = mae
+        self.r2 = r2
+        self.mape = mape
+        self.smape = smape
+        self.diff_log_rmse = diff_log_rmse
+        self.diff_log_mae = diff_log_mae
+        self.diff_log_r2 = diff_log_r2
+        self.diff_log_mape = diff_log_mape
+        self.diff_log_smape = diff_log_smape
+
+
+    def __repr__(self):
+        text : str = ''
+        if self.diff_log_rmse:
+            text += f"\nDiff Log RMSE:  {self.diff_log_rmse:.4f}"
+            text += f"\nDiff Log MAE:   {self.diff_log_mae:.4f}"
+            text += f"\nDiff Log R²:    {self.diff_log_r2:.4f}"
+            text += f"\nDiff Log MAPE:  {self.diff_log_mape:.4f}%"
+            text += f"\nDiff Log sMAPE: {self.diff_log_smape:.4f}%"
+        if self.rmse:
+            text += f"\nForecast RMSE:  {self.rmse:.4f}"
+            text += f"\nForecast MAE:   {self.mae:.4f}"
+            text += f"\nForecast R²:    {self.r2:.4f}"
+            text += f"\nForecast MAPE:  {self.mape:.4f}%"
+            text += f"\nForecast sMAPE: {self.smape:.4f}%"
+        return text
+    
+    def to_dict(self):
+        dic = {}
+        if self.diff_log_rmse:
+            dic['diff_log_rmse'] = self.diff_log_rmse
+            dic['diff_log_mae'] = self.diff_log_mae
+            dic['diff_log_r2'] = self.diff_log_r2
+            dic['diff_log_mape'] = self.diff_log_mape
+            dic['diff_log_smape'] = self.diff_log_smape
+        dic['rmse'] = self.rmse
+        dic['mae'] = self.mae
+        dic['r2'] = self.r2
+        dic['mape'] = self.mape
+        dic['smape'] = self.smape
+        return dic
+
+
 def init_df(data_file):
     """
     Read JSON file as a DataFrame
@@ -31,35 +143,28 @@ def init_df(data_file):
 
     # Set frequency to monthly start (note: this assumes the data is monthly)
     df = df.asfreq('MS')
-    
+
     return df
 
-def evaluate_forecast(y_true, y_pred, var_name):
+def diff_df(df:DataFrame, var0 = None, var1 = None):
     """
-    Evaluates and prints the forecast performance metrics.
-
+    Read JSON file as a DataFrame
     Args:
-        y_true (pd.Series or np.ndarray): Actual values.
-        y_pred (pd.Series or np.ndarray): Predicted values.
-        var_name (str): Name of the variable being forecasted (for printing).
+        df (Dataframe): Dataframe
+        var0 (String): Variable 0
+        var1 (String): Variable 1
     """
-    rmse = np.sqrt(mean_squared_error(y_true, y_pred))
-    mae = mean_absolute_error(y_true, y_pred)
-    r2 = r2_score(y_true, y_pred)
-    y_true = np.array(y_true)
-    y_pred = np.array(y_pred)
-    mask = y_true != 0
-    denominator = (np.abs(y_true) + np.abs(y_pred)) / 2
-    mape = np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100
-    smape = np.mean(np.abs(y_true[mask] - y_pred[mask]) / denominator[mask]) * 100
 
-    print(f"{var_name} Forecast RMSE: {rmse:.4f}")
-    print(f"{var_name} Forecast MAE: {mae:.4f}")
-    print(f"{var_name} Forecast R²: {r2:.4f}")
-    print(f"{var_name} Forecast MAPE: {mape:.4f}%")
-    print(f"{var_name} Forecast sMAPE: {smape:.4f}%")
+    # Add diffrential data
+    if var0:
+        df[f'log_{var0}'] = np.log(df[var0] + 1e-6)
+        df[f'diff_log_{var0}'] = df[f'log_{var0}'].diff()
+    if var1:
+        df[f'log_{var1}'] = np.log(df[var1] + 1e-6)
+        df[f'diff_log_{var1}'] = df[f'log_{var1}'].diff()
+    df.dropna(inplace=True)
     
-    return rmse, mae, r2
+    return df
 
 def plot_forecast(diff:bool, actual, predicted, var0, var1, forecast_index, title_suffix=""):
     """

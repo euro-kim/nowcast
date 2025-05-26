@@ -1,0 +1,1 @@
+NeuralProphet 모델 - MAE: 39872.218, RMSE: 48782.339, MAPE: 10.94%, sMAPE: 11.81%, R2: -0.313

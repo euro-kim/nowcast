@@ -1,0 +1,8 @@
+kagglehub 
+prophet 
+neuralprophet 
+pandas 
+matplotlib 
+scikit-learn
+plotly
+properscoring

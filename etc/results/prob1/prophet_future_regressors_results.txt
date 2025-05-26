@@ -1,0 +1,1 @@
+Future Regressors 포함 Prophet - MAE: 25520.132, RMSE: 33479.167, MAPE: 7.01%, sMAPE: 7.18%, R2: 0.382 (기본 모델 대비 MAE: +460.321, MAPE: +0.13%)

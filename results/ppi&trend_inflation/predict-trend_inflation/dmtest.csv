@@ -1,0 +1,2 @@
+model,variable,loss,dm_stat,p_value
+VAR(3),trend_inflation,mse,-0.03702484563558651,0.9704651953666705

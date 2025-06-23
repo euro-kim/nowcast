@@ -1,0 +1,16 @@
+variable,model,order,parameter,value
+cpi,VAR,7,coef_lag1_cpi,0.28271240857885094
+cpi,VAR,7,coef_lag1_trend_mulga,0.002939430342425303
+cpi,VAR,7,coef_lag2_cpi,-0.21613637876542474
+cpi,VAR,7,coef_lag2_trend_mulga,0.0013449310682685008
+cpi,VAR,7,coef_lag3_cpi,-0.24634920314041195
+cpi,VAR,7,coef_lag3_trend_mulga,0.0052182460363943695
+cpi,VAR,7,coef_lag4_cpi,0.28306607920314364
+cpi,VAR,7,coef_lag4_trend_mulga,0.0016012335145181161
+cpi,VAR,7,coef_lag5_cpi,0.002563912761201048
+cpi,VAR,7,coef_lag5_trend_mulga,-0.002946299830952126
+cpi,VAR,7,coef_lag6_cpi,0.11263881925391124
+cpi,VAR,7,coef_lag6_trend_mulga,-0.00042789347209959416
+cpi,VAR,7,coef_lag7_cpi,0.25301437434928814
+cpi,VAR,7,coef_lag7_trend_mulga,0.001714579701552428
+cpi,VAR,7,intercept,0.0008674141855330067

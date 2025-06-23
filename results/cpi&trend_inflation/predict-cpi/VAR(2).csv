@@ -1,0 +1,6 @@
+variable,model,order,parameter,value
+cpi,VAR,2,coef_lag1_cpi,0.3491360820587384
+cpi,VAR,2,coef_lag1_trend_inflation,0.0004913992671735125
+cpi,VAR,2,coef_lag2_cpi,-0.32765673029044606
+cpi,VAR,2,coef_lag2_trend_inflation,-0.0011193895040989693
+cpi,VAR,2,intercept,0.0016541775853442997

@@ -1,0 +1,8 @@
+variable,model,order,parameter,value
+ppi,VAR,2,coef_lag1_cpi,-0.1800837945555302
+ppi,VAR,2,coef_lag1_ppi,0.7904423630849662
+ppi,VAR,2,coef_lag1_trend_mulga,0.0020890037585010075
+ppi,VAR,2,coef_lag2_cpi,-0.146967962776091
+ppi,VAR,2,coef_lag2_ppi,-0.11636184028984393
+ppi,VAR,2,coef_lag2_trend_mulga,0.0025894294675401185
+ppi,VAR,2,intercept,0.0009827033218359077

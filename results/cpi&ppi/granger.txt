@@ -1,0 +1,216 @@
+
+Testing if diff_log_ppi Granger-causes diff_log_cpi:
+
+Granger Causality
+number of lags (no zero) 1
+ssr based F test:         F=17.0890 , p=0.0001  , df_denom=166, df_num=1
+ssr based chi2 test:   chi2=17.3979 , p=0.0000  , df=1
+likelihood ratio test: chi2=16.5594 , p=0.0000  , df=1
+parameter F test:         F=17.0890 , p=0.0001  , df_denom=166, df_num=1
+
+Granger Causality
+number of lags (no zero) 2
+ssr based F test:         F=14.3377 , p=0.0000  , df_denom=163, df_num=2
+ssr based chi2 test:   chi2=29.5551 , p=0.0000  , df=2
+likelihood ratio test: chi2=27.2250 , p=0.0000  , df=2
+parameter F test:         F=14.3377 , p=0.0000  , df_denom=163, df_num=2
+
+Granger Causality
+number of lags (no zero) 3
+ssr based F test:         F=11.9886 , p=0.0000  , df_denom=160, df_num=3
+ssr based chi2 test:   chi2=37.5393 , p=0.0000  , df=3
+likelihood ratio test: chi2=33.8620 , p=0.0000  , df=3
+parameter F test:         F=11.9886 , p=0.0000  , df_denom=160, df_num=3
+
+Granger Causality
+number of lags (no zero) 4
+ssr based F test:         F=7.2303  , p=0.0000  , df_denom=157, df_num=4
+ssr based chi2 test:   chi2=30.5790 , p=0.0000  , df=4
+likelihood ratio test: chi2=28.0667 , p=0.0000  , df=4
+parameter F test:         F=7.2303  , p=0.0000  , df_denom=157, df_num=4
+
+Granger Causality
+number of lags (no zero) 5
+ssr based F test:         F=6.7445  , p=0.0000  , df_denom=154, df_num=5
+ssr based chi2 test:   chi2=36.1315 , p=0.0000  , df=5
+likelihood ratio test: chi2=32.6722 , p=0.0000  , df=5
+parameter F test:         F=6.7445  , p=0.0000  , df_denom=154, df_num=5
+
+Granger Causality
+number of lags (no zero) 6
+ssr based F test:         F=5.2609  , p=0.0001  , df_denom=151, df_num=6
+ssr based chi2 test:   chi2=34.2830 , p=0.0000  , df=6
+likelihood ratio test: chi2=31.1320 , p=0.0000  , df=6
+parameter F test:         F=5.2609  , p=0.0001  , df_denom=151, df_num=6
+
+Granger Causality
+number of lags (no zero) 7
+ssr based F test:         F=4.7426  , p=0.0001  , df_denom=148, df_num=7
+ssr based chi2 test:   chi2=36.5627 , p=0.0000  , df=7
+likelihood ratio test: chi2=32.9876 , p=0.0000  , df=7
+parameter F test:         F=4.7426  , p=0.0001  , df_denom=148, df_num=7
+
+Granger Causality
+number of lags (no zero) 8
+ssr based F test:         F=4.7030  , p=0.0000  , df_denom=145, df_num=8
+ssr based chi2 test:   chi2=42.0347 , p=0.0000  , df=8
+likelihood ratio test: chi2=37.3724 , p=0.0000  , df=8
+parameter F test:         F=4.7030  , p=0.0000  , df_denom=145, df_num=8
+
+Granger Causality
+number of lags (no zero) 9
+ssr based F test:         F=4.1438  , p=0.0001  , df_denom=142, df_num=9
+ssr based chi2 test:   chi2=42.2844 , p=0.0000  , df=9
+likelihood ratio test: chi2=37.5454 , p=0.0000  , df=9
+parameter F test:         F=4.1438  , p=0.0001  , df_denom=142, df_num=9
+
+Granger Causality
+number of lags (no zero) 10
+ssr based F test:         F=4.0225  , p=0.0001  , df_denom=139, df_num=10
+ssr based chi2 test:   chi2=46.3017 , p=0.0000  , df=10
+likelihood ratio test: chi2=40.6665 , p=0.0000  , df=10
+parameter F test:         F=4.0225  , p=0.0001  , df_denom=139, df_num=10
+
+Granger Causality
+number of lags (no zero) 11
+ssr based F test:         F=3.4473  , p=0.0003  , df_denom=136, df_num=11
+ssr based chi2 test:   chi2=44.3336 , p=0.0000  , df=11
+likelihood ratio test: chi2=39.1051 , p=0.0001  , df=11
+parameter F test:         F=3.4473  , p=0.0003  , df_denom=136, df_num=11
+
+Granger Causality
+number of lags (no zero) 12
+ssr based F test:         F=2.9240  , p=0.0013  , df_denom=133, df_num=12
+ssr based chi2 test:   chi2=41.6841 , p=0.0000  , df=12
+likelihood ratio test: chi2=36.9944 , p=0.0002  , df=12
+parameter F test:         F=2.9240  , p=0.0013  , df_denom=133, df_num=12
+
+Granger Causality
+number of lags (no zero) 13
+ssr based F test:         F=2.7982  , p=0.0015  , df_denom=130, df_num=13
+ssr based chi2 test:   chi2=43.9316 , p=0.0000  , df=13
+likelihood ratio test: chi2=38.7348 , p=0.0002  , df=13
+parameter F test:         F=2.7982  , p=0.0015  , df_denom=130, df_num=13
+
+Granger Causality
+number of lags (no zero) 14
+ssr based F test:         F=2.7103  , p=0.0016  , df_denom=127, df_num=14
+ssr based chi2 test:   chi2=46.6088 , p=0.0000  , df=14
+likelihood ratio test: chi2=40.7817 , p=0.0002  , df=14
+parameter F test:         F=2.7103  , p=0.0016  , df_denom=127, df_num=14
+
+Granger Causality
+number of lags (no zero) 15
+ssr based F test:         F=2.6619  , p=0.0016  , df_denom=124, df_num=15
+ssr based chi2 test:   chi2=49.9101 , p=0.0000  , df=15
+likelihood ratio test: chi2=43.2677 , p=0.0001  , df=15
+parameter F test:         F=2.6619  , p=0.0016  , df_denom=124, df_num=15
+
+
+Testing if diff_log_cpi Granger-causes diff_log_ppi:
+
+Granger Causality
+number of lags (no zero) 1
+ssr based F test:         F=3.8523  , p=0.0514  , df_denom=166, df_num=1
+ssr based chi2 test:   chi2=3.9219  , p=0.0477  , df=1
+likelihood ratio test: chi2=3.8771  , p=0.0490  , df=1
+parameter F test:         F=3.8523  , p=0.0514  , df_denom=166, df_num=1
+
+Granger Causality
+number of lags (no zero) 2
+ssr based F test:         F=2.6339  , p=0.0749  , df_denom=163, df_num=2
+ssr based chi2 test:   chi2=5.4294  , p=0.0662  , df=2
+likelihood ratio test: chi2=5.3435  , p=0.0691  , df=2
+parameter F test:         F=2.6339  , p=0.0749  , df_denom=163, df_num=2
+
+Granger Causality
+number of lags (no zero) 3
+ssr based F test:         F=1.4334  , p=0.2351  , df_denom=160, df_num=3
+ssr based chi2 test:   chi2=4.4883  , p=0.2133  , df=3
+likelihood ratio test: chi2=4.4290  , p=0.2187  , df=3
+parameter F test:         F=1.4334  , p=0.2351  , df_denom=160, df_num=3
+
+Granger Causality
+number of lags (no zero) 4
+ssr based F test:         F=0.9493  , p=0.4372  , df_denom=157, df_num=4
+ssr based chi2 test:   chi2=4.0150  , p=0.4040  , df=4
+likelihood ratio test: chi2=3.9672  , p=0.4105  , df=4
+parameter F test:         F=0.9493  , p=0.4372  , df_denom=157, df_num=4
+
+Granger Causality
+number of lags (no zero) 5
+ssr based F test:         F=1.3045  , p=0.2649  , df_denom=154, df_num=5
+ssr based chi2 test:   chi2=6.9885  , p=0.2215  , df=5
+likelihood ratio test: chi2=6.8445  , p=0.2325  , df=5
+parameter F test:         F=1.3045  , p=0.2649  , df_denom=154, df_num=5
+
+Granger Causality
+number of lags (no zero) 6
+ssr based F test:         F=1.2186  , p=0.2997  , df_denom=151, df_num=6
+ssr based chi2 test:   chi2=7.9413  , p=0.2424  , df=6
+likelihood ratio test: chi2=7.7550  , p=0.2566  , df=6
+parameter F test:         F=1.2186  , p=0.2997  , df_denom=151, df_num=6
+
+Granger Causality
+number of lags (no zero) 7
+ssr based F test:         F=1.3352  , p=0.2376  , df_denom=148, df_num=7
+ssr based chi2 test:   chi2=10.2935 , p=0.1725  , df=7
+likelihood ratio test: chi2=9.9815  , p=0.1896  , df=7
+parameter F test:         F=1.3352  , p=0.2376  , df_denom=148, df_num=7
+
+Granger Causality
+number of lags (no zero) 8
+ssr based F test:         F=1.2368  , p=0.2817  , df_denom=145, df_num=8
+ssr based chi2 test:   chi2=11.0546 , p=0.1986  , df=8
+likelihood ratio test: chi2=10.6938 , p=0.2197  , df=8
+parameter F test:         F=1.2368  , p=0.2817  , df_denom=145, df_num=8
+
+Granger Causality
+number of lags (no zero) 9
+ssr based F test:         F=2.1514  , p=0.0289  , df_denom=142, df_num=9
+ssr based chi2 test:   chi2=21.9537 , p=0.0090  , df=9
+likelihood ratio test: chi2=20.5804 , p=0.0146  , df=9
+parameter F test:         F=2.1514  , p=0.0289  , df_denom=142, df_num=9
+
+Granger Causality
+number of lags (no zero) 10
+ssr based F test:         F=2.6605  , p=0.0053  , df_denom=139, df_num=10
+ssr based chi2 test:   chi2=30.6250 , p=0.0007  , df=10
+likelihood ratio test: chi2=28.0215 , p=0.0018  , df=10
+parameter F test:         F=2.6605  , p=0.0053  , df_denom=139, df_num=10
+
+Granger Causality
+number of lags (no zero) 11
+ssr based F test:         F=2.2469  , p=0.0153  , df_denom=136, df_num=11
+ssr based chi2 test:   chi2=28.8953 , p=0.0024  , df=11
+likelihood ratio test: chi2=26.5499 , p=0.0054  , df=11
+parameter F test:         F=2.2469  , p=0.0153  , df_denom=136, df_num=11
+
+Granger Causality
+number of lags (no zero) 12
+ssr based F test:         F=2.0655  , p=0.0233  , df_denom=133, df_num=12
+ssr based chi2 test:   chi2=29.4449 , p=0.0034  , df=12
+likelihood ratio test: chi2=27.0006 , p=0.0077  , df=12
+parameter F test:         F=2.0655  , p=0.0233  , df_denom=133, df_num=12
+
+Granger Causality
+number of lags (no zero) 13
+ssr based F test:         F=1.9706  , p=0.0281  , df_denom=130, df_num=13
+ssr based chi2 test:   chi2=30.9377 , p=0.0034  , df=13
+likelihood ratio test: chi2=28.2388 , p=0.0084  , df=13
+parameter F test:         F=1.9706  , p=0.0281  , df_denom=130, df_num=13
+
+Granger Causality
+number of lags (no zero) 14
+ssr based F test:         F=1.8282  , p=0.0411  , df_denom=127, df_num=14
+ssr based chi2 test:   chi2=31.4389 , p=0.0048  , df=14
+likelihood ratio test: chi2=28.6412 , p=0.0117  , df=14
+parameter F test:         F=1.8282  , p=0.0411  , df_denom=127, df_num=14
+
+Granger Causality
+number of lags (no zero) 15
+ssr based F test:         F=1.7426  , p=0.0509  , df_denom=124, df_num=15
+ssr based chi2 test:   chi2=32.6735 , p=0.0052  , df=15
+likelihood ratio test: chi2=29.6482 , p=0.0133  , df=15
+parameter F test:         F=1.7426  , p=0.0509  , df_denom=124, df_num=15
+

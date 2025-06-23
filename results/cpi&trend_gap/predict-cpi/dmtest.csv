@@ -1,0 +1,2 @@
+model,variable,loss,dm_stat,p_value
+VAR(10),cpi,mse,0.822881711361285,0.41057526384131693

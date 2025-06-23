@@ -1,0 +1,8 @@
+variable,model,order,parameter,value
+ppi,VAR,3,coef_lag1_ppi,0.733290917284962
+ppi,VAR,3,coef_lag1_trend_inflation,0.0037414305319628804
+ppi,VAR,3,coef_lag2_ppi,-0.2740308548846129
+ppi,VAR,3,coef_lag2_trend_inflation,0.0041648412104222515
+ppi,VAR,3,coef_lag3_ppi,0.10754057818658058
+ppi,VAR,3,coef_lag3_trend_inflation,0.0037240521351883937
+ppi,VAR,3,intercept,0.000553503892252973

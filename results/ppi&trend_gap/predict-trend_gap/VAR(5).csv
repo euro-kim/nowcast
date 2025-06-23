@@ -1,0 +1,12 @@
+variable,model,order,parameter,value
+trend_gap,VAR,5,coef_lag1_ppi,3.4071458943918334
+trend_gap,VAR,5,coef_lag1_trend_gap,-0.5273478410192509
+trend_gap,VAR,5,coef_lag2_ppi,0.18392420928333236
+trend_gap,VAR,5,coef_lag2_trend_gap,-0.4073556575997172
+trend_gap,VAR,5,coef_lag3_ppi,1.0621939941335137
+trend_gap,VAR,5,coef_lag3_trend_gap,-0.436913873279429
+trend_gap,VAR,5,coef_lag4_ppi,-1.9750444579705224
+trend_gap,VAR,5,coef_lag4_trend_gap,-0.45728236062873506
+trend_gap,VAR,5,coef_lag5_ppi,0.032059280420774994
+trend_gap,VAR,5,coef_lag5_trend_gap,-0.20647030954414336
+trend_gap,VAR,5,intercept,0.0013346341897743554

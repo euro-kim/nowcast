@@ -1,0 +1,24 @@
+
+Testing if diff_log_ppi, diff_log_trend_mulga Granger-causes diff_log_cpi:
+Granger causality F-test. H_0: ['diff_log_ppi', 'diff_log_trend_mulga'] do not Granger-cause diff_log_cpi. Conclusion: reject H_0 at 5% significance level.
+==============================================
+Test statistic Critical value p-value    df   
+----------------------------------------------
+         7.894          2.390   0.000 (4, 483)
+----------------------------------------------
+
+Testing if diff_log_cpi, diff_log_trend_mulga Granger-causes diff_log_ppi:
+Granger causality F-test. H_0: ['diff_log_cpi', 'diff_log_trend_mulga'] do not Granger-cause diff_log_ppi. Conclusion: fail to reject H_0 at 5% significance level.
+==============================================
+Test statistic Critical value p-value    df   
+----------------------------------------------
+         1.828          2.390   0.122 (4, 483)
+----------------------------------------------
+
+Testing if diff_log_cpi, diff_log_ppi Granger-causes diff_log_trend_mulga:
+Granger causality F-test. H_0: ['diff_log_cpi', 'diff_log_ppi'] do not Granger-cause diff_log_trend_mulga. Conclusion: fail to reject H_0 at 5% significance level.
+==============================================
+Test statistic Critical value p-value    df   
+----------------------------------------------
+         1.545          2.390   0.188 (4, 483)
+----------------------------------------------

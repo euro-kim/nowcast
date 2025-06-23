@@ -1,0 +1,4 @@
+pair,pearson_correlation
+"(cpi, ppi)",0.8536114421929977
+"(cpi, trend_gap)",0.6918038901118793
+"(ppi, trend_gap)",0.6765226809019058

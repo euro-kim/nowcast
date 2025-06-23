@@ -4,112 +4,117 @@
 [![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](https://github.com/euro-kim/nowcast/pulls)
 
 ## Overview
-This is a source code containg simple code to predict economic variables with web traffic data.
+This repository provides code to predict economic variables using web traffic data.
 
-1. **Included Models**
-    
-    Casual Models: VAR <br />
-    Forecasting Models: ARIMA, Linear Model, VAR, LSTM, GRU <br />
+**Included Models:**
+- Causal Models: VAR  
+- Forecasting Models: ARIMA, Linear Model, VAR, LSTM, GRU
 
-2. **Usage**
+## Getting Started
 
-    By default, the data contains monthly CPI, PPI, employment data from South Korea, ranging from 2010.01 to 2025.03. <br />
-    By default, the data contains google trends data for keyword '물가' and inflation in South Korea, ranging from 2010.01 to 2025.03. <br />
-    To add , add the data in json format in folder at assets/data.json <br />
+### 0. Prerequisites
 
-## Getting Started 
+- **Python 3.12+** ([Download Python](https://www.python.org/downloads/))
+- **pip** (comes with Python)
 
-This guide will help you get up and running with the project.
+### 1. Clone the repository
 
-0. **Prerequisites**
+```bash
+git clone https://github.com/euro-kim/nowcast
+```
 
-    Make sure you have the following installed on your system:
-    
-    * **Python** ([Download Python](https://www.python.org/downloads/))
-    * **pip** (should come with your Python installation)
+### 2. Install dependencies
 
+```bash
+pip install -r requirements.txt
+```
 
-1.  **Clone the repository:**
+### 3. Prepare your data
 
-    ```bash
-    git clone https://github.com/euro-kim/nowcast
-    ```
+- By default, the data contains monthly CPI, PPI, and employment data from South Korea (2010.01–2025.03).
+- Google Trends data for the keyword '물가' and inflation in South Korea is also included.
+- To use your own data, add it in CSV format to `assets/data.csv`.
 
-2.  **Install the required Python packages:**
+### 4. Running the Main Script
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+The main entry point is `run.py`. You can use it to perform different activities with various models.
 
-    This command will install all the necessary libraries listed in the `requirements.txt` file.
-    
-4. **Running the Main Script:**
+**Basic syntax:**
+```bash
+python run.py <activity> <model_name> [arguments]
+```
 
-    The primary entry point for this project is the `run.py` script. You can use it to perform different activities with various models.
+**Examples:**
+```bash
+python run.py forecast gru --vars 'ppi,inflation' --seed 1
+python run.py casual var --vars 'cpi,inflation'
+```
 
-    The basic syntax is:
-    
-    ```bash
-    python run.py <activity> <model_name> [arguments]
-    
-    ```
-    activity includes 'forecast' and 'casual', and model_name includes  
+**Model Comparison Examples:**
+```bash
+python run.py compare var --vars 'cpi,ppi'
+python run.py compare_var_lstm_gru var --vars 'cpi,ppi'
+python run.py compare_var_arima_gru var --vars 'cpi,ppi'
+# Or using flags:
+python run.py forecast gru --vars 'cpi,ppi' --compare_models
+python run.py forecast gru --vars 'cpi,ppi' --compare_var_lstm_gru
+python run.py forecast gru --vars 'cpi,ppi' --compare_var_arima_gru
+```
 
+---
 
-    ```bash
-    python run.py forecast gru --var0 'ppi' --var1 'inflation' --seed 1
-    python run.py casual var --var0 'cpi' --var1 'inflation' 
-    
-    ```
+## Command-Line Arguments
 
+### Activities
 
-5. **Detail the Available Arguments:**
+| Activity                  | Description                                              |
+|---------------------------|----------------------------------------------------------|
+| `forecast`                | Forecasting (prediction)                                 |
+| `casual`                  | (removed)                                               |
+| `compare`                 | Compare ARIMA, AR, MA, VAR predictions                  |
+| `compare_var_lstm_gru`    | Compare VAR, LSTM, GRU predictions                      |
+| `compare_var_arima_gru`   | Compare VAR, ARIMA, GRU predictions                     |
 
-    A clear table or list is the best way to present the command-line arguments.
-            
-    ```markdown
+### Models
 
-    ### Available Acitity
-    
-    The `run.py` script requires one of the activities:
-    
-    | Activity      | Description                                                                     |
-    |---------------|---------------------------------------------------------------------------------|
-    | forecast      | Forecasting (prediction)                                                        |
-    | casual        | Casual Inference. Only supports VAR                                             |
+| model_name    | Description                  |
+|---------------|-----------------------------|
+| arima         | ARIMA model                 |
+| linear        | Simple Linear Regression    |
+| var           | VAR model                   |
+| lstm          | LSTM model                  |
+| gru           | GRU model                   |
 
+### Arguments
 
-    ### Available Models
-    
-    The `run.py` script requires one of the following model_names:
-    
-    | model_name    | Description                                                                     |
-    |---------------|---------------------------------------------------------------------------------|
-    | arima         | ARIMA model                                                                     |
-    | linear        | Simple Linear Regression                                                        |
-    | var           | VAR model                                                                       |
-    | lstm          | LSTM model                                                                      |
-    | gru           | GRU model                                                                       |
+| Argument                  | Type    | Default                | Description                                                        |
+|---------------------------|---------|------------------------|--------------------------------------------------------------------|
+| `--seed`                  | int     | 1                      | Random seed for reproducibility                                    |
+| `--horizon`               | int     | 12                     | Number of time steps to forecast                                   |
+| `--lag`                   | int     | 12                     | Number of lagged observations (for VAR, LSTM, GRU)                 |
+| `--p`                     | int     | -1                     | AR order (AR, ARIMA, GARCH)                                       |
+| `--d`                     | int     | -1                     | Differencing order (ARIMA)                                         |
+| `--q`                     | int     | -1                     | MA order (MA, ARIMA, GARCH)                                       |
+| `--maxlags`               | int     | 15                     | Maximum lags for VAR                                               |
+| `--neurons`               | int     | 200                    | Number of neurons in RNN layers                                    |
+| `--layers`                | int     | 1                      | Number of layers for RNN models                                    |
+| `--batch_size`            | int     | 16                     | Batch size for RNN training                                        |
+| `--epochs`                | int     | 100                    | Number of training epochs for RNN                                  |
+| `--data_file`             | str     | 'assets/data.csv'      | Path to the CSV data file                                          |
+| `--vars`                  | str     | 'cpi,ppi'              | Comma-separated list of variables                                  |
+| `--ic`                    | str     | 'aic'                  | Information criterion for VAR (`aic`, `bic`, etc.)                 |
+| `--optimizer`             | str     | 'adam'                 | Optimizer for RNN models                                           |
+| `--loss`                  | str     | 'mean_squared_error'   | Loss function for RNN models                                       |
+| `--compare_models`        | flag    |                        | Compare ARIMA, AR, MA, VAR models in a single plot                 |
+| `--compare_var_lstm_gru`  | flag    |                        | Compare VAR, LSTM, GRU models in a single plot                     |
+| `--compare_var_arima_gru` | flag    |                        | Compare VAR, ARIMA, GRU models in a single plot                    |
 
-    
-    ### Available Arguments
-    
-    The `run.py` script accepts the following optional arguments:
-    
-    | Argument      | Type    | Default               | Description                                                                     |
-    |---------------|---------|-----------------------|---------------------------------------------------------------------------------|
-    | `--seed`      | `int`   | `1`                   | Random seed for reproducibility.                                                |
-    | `--horizon`   | `int`   | `12`                  | The number of time steps to forecast.                                           |
-    | `--lag`       | `int`   | `12`                  | The number of lagged observations to use for VAR.                               |
-    | `--maxlags`   | `int`   | `15`                  | The maximum number of lags to consider for VAR order selection.                 |
-    | `--neurons`   | `int`   | `200`                 | The number of neurons in the deep learning model's layers.                      |
-    | `--layerss`   | `int`   | `1`                   | The number of layers for RNN models.                                            |
-    | `--batch_size`| `int`   | `16`                  | The batch size for training deep learning models.                               |
-    | `--epochs`    | `int`   | `100`                 | The number of training epochs for deep learning.                                |
-    | `--data_file` | `str`   | `'assets/data.json'`  | Path to the JSON data file containing your economic and web traffic data.       |
-    | `--var0`      | `str`   | `'cpi'`               | The name of the first economic variable.                                        |
-    | `--var1`      | `str`   | `'ppi'`               | The name of the second economic variable.                                       |
-    | `--ic`        | `str`   | `'aic'`               | The information criterion for VAR order selection (`aic`, `bic`, `hqic`).       |
-    | `--optimizer` | `str`   | `'adam'`              | The optimization algorithm for deep learning (`adam`, `sgd`).                   |
-    | `--loss`      | `str`   | `'mean_squared_error'`| The loss function for deep learning (`mean_squared_error`, `mae`).              |
-    ```
+---
+
+## Notes
+
+- For model comparison, you can use either the `activity` argument (`compare`, `compare_var_lstm_gru`, `compare_var_arima_gru`) or the corresponding flag (`--compare_models`, `--compare_var_lstm_gru`, `--compare_var_arima_gru`).
+- The `--vars` argument should be a comma-separated string of variable names present in your data file.
+- All plots and results are saved in the `results/` directory.
+
+---

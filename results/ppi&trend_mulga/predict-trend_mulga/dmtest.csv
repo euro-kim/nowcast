@@ -1,0 +1,2 @@
+model,variable,loss,dm_stat,p_value
+VAR(3),trend_mulga,mse,0.7781047952837302,0.43650723599667907

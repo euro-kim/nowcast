@@ -1,0 +1,17 @@
+variable,model,order,parameter,value
+ppi,VAR,5,coef_lag1_cpi,-0.18517821204564025
+ppi,VAR,5,coef_lag1_ppi,0.8159657433169372
+ppi,VAR,5,coef_lag1_trend_gap,-0.003223956284766464
+ppi,VAR,5,coef_lag2_cpi,-0.11990239381441686
+ppi,VAR,5,coef_lag2_ppi,-0.1831676698746436
+ppi,VAR,5,coef_lag2_trend_gap,-0.00047470379745525454
+ppi,VAR,5,coef_lag3_cpi,-0.006010711830895472
+ppi,VAR,5,coef_lag3_ppi,0.0915717197504172
+ppi,VAR,5,coef_lag3_trend_gap,0.002585265891449688
+ppi,VAR,5,coef_lag4_cpi,-0.009512915369351185
+ppi,VAR,5,coef_lag4_ppi,-0.08120280197660365
+ppi,VAR,5,coef_lag4_trend_gap,-0.0018974655941528737
+ppi,VAR,5,coef_lag5_cpi,-0.18817321988433003
+ppi,VAR,5,coef_lag5_ppi,0.23727207586247162
+ppi,VAR,5,coef_lag5_trend_gap,0.0021246612506891777
+ppi,VAR,5,intercept,0.0010022778346271163

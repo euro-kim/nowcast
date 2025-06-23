@@ -1,0 +1,2 @@
+model,variable,loss,dm_stat,p_value
+VAR(10),trend_gap,mse,2.4072809914287068,0.016071798676718263

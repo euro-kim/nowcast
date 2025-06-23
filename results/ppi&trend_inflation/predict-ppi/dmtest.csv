@@ -1,0 +1,2 @@
+model,variable,loss,dm_stat,p_value
+VAR(3),ppi,mse,2.637900792554208,0.008342098266662878
